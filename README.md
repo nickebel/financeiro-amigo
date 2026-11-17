@@ -12,6 +12,7 @@ Um app financeiro pessoal, azul, sem login e sem cadastro. Abre diretamente no p
 - Gráficos por categoria e relatórios.
 - Exportação e restauração de backup em JSON.
 - Instalação como PWA e abertura offline depois da primeira visita.
+- Navegação por URL: páginas, período e tipo de lançamento podem ser compartilhados; a busca digitada não é incluída.
 
 ## Como os dados são guardados
 
@@ -40,7 +41,7 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 ## Design e qualidade
 
-A interface segue o sistema documentado em [DESIGN.md](DESIGN.md), inspirado na skill [Hallmark](https://github.com/Nutlope/hallmark) v2.0.0 e adaptado ao escopo de um app financeiro. O workflow **Hallmark design audit** roda a verificação estática de regras essenciais em cada push e pull request.
+A interface segue o sistema documentado em [DESIGN.md](DESIGN.md), aplicado em um redesign de app-screen com a skill [Hallmark](https://github.com/Nutlope/hallmark) v2.0.0. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
 ## Desenvolvimento
 

@@ -1,0 +1,10 @@
+[
+  {
+    "date": "2026-11-17",
+    "mode": "redesign",
+    "depth": "full",
+    "scope": "app",
+    "theme": "cobalt-adapted",
+    "prompt": "Aplicativo financeiro pessoal para registrar entradas e despesas manualmente, acompanhar o saldo do período, vencimentos, cartões, parcelas e metas; dados locais neste aparelho."
+  }
+]
