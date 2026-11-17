@@ -51,7 +51,7 @@ cp ../components/ui/glyph-portal.tsx ../components/ui/demo.tsx src/components/ui
 
 ### Tailwind CSS
 
-No projeto Vite, o arquivo `src/index.css` deve importar o Tailwind v4:
+No projeto Vite, a folha global do React fica em `src/index.css` (o CSS atual do Ray está em `style.css` na raiz e não será substituído). Importe o Tailwind v4 em `src/index.css`:
 
 ```css
 @import "tailwindcss";
