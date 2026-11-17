@@ -990,3 +990,24 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
 
 .table-panel input, .table-panel select { min-height: 40px; }
 @media (max-width: 40rem) { .table-panel input, .table-panel select { min-height: 44px; } }
+
+/* Desktop navigation owns the horizontal room; mobile actions stay icon-sized. */
+@media (min-width: 60.001rem) {
+  .mobile-menu { display: none; }
+  .sidebar-bottom { display: none; }
+}
+@media (max-width: 60rem) {
+  .mobile-menu { display: inline-grid; min-width: 48px; min-height: 48px; }
+  .sidebar-bottom { display: none; }
+}
+@media (max-width: 40rem) {
+  .backup-btn, .install-app-btn {
+    min-width: 48px;
+    min-height: 48px;
+    width: 48px;
+    padding: 0;
+    overflow: hidden;
+    font-size: 0;
+  }
+  .backup-btn::before, .install-app-btn::before { font-size: 18px; }
+}
