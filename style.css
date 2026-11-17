@@ -122,7 +122,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   background: var(--color-accent);
   color: var(--color-accent-ink);
   font-size: 20px;
-  font-weight: 750;
+  font-weight: 700;
 }
 .brand-mark.small { width: 34px; height: 34px; font-size: 16px; }
 #navigation {
