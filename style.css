@@ -265,6 +265,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   margin-bottom: var(--space-4);
 }
 .summary-card {
+  color: var(--color-ink);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -326,6 +327,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   margin-bottom: var(--space-4);
 }
 .panel {
+  color: var(--color-ink);
   min-width: 0;
   margin-bottom: var(--space-4);
   padding: var(--space-5);
@@ -534,6 +536,7 @@ textarea { min-height: 104px; resize: vertical; }
 .network-label { padding: var(--space-1) var(--space-2); border: 1px solid var(--color-rule); border-radius: var(--radius-control); }
 .card-cycle { margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-rule); }
 .goal-card {
+  color: var(--color-ink);
   min-width: 0;
   padding: var(--space-5);
   border: 1px solid var(--color-rule);
@@ -564,7 +567,7 @@ textarea { min-height: 104px; resize: vertical; }
 
 /* Page-level reports, overlay, buttons and footer */
 .report-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 720px; }
-.report-summary .summary-card { min-height: 112px; }
+.report-summary .summary-card { min-height: 112px; color: var(--color-ink); }
 .report-summary strong { margin-top: var(--space-3); font-size: 24px; }
 .report-row {
   display: grid;
@@ -1169,7 +1172,7 @@ h3 { font-size: 19px; }
   text-transform: none;
 }
 .summary-grid:not(.report-summary) .balance-card strong {
-  color: var(--color-accent-wash);
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-size: clamp(38px, 5vw, 58px);
   font-weight: 500;
