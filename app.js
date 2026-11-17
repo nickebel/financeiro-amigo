@@ -33,7 +33,7 @@ function init(){
  }
  const configured=!!(window.supabase&&C.SUPABASE_URL&&C.SUPABASE_ANON_KEY);
  if(configured)db=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
- else {msg("authMessage","Você pode experimentar a demonstração sem criar uma conta.");["signInBtn","signUpBtn","resetBtn"].forEach(id=>$(id).disabled=true);if(!navigator.onLine)restoreOfflineSession()}
+ else {msg("authMessage","O acesso ainda não foi configurado. O responsável precisa conectar o banco Supabase para liberar o login.");["signInBtn","signUpBtn","resetBtn"].forEach(id=>$(id).disabled=true);if(!navigator.onLine)restoreOfflineSession()}
  if(db){
   $("signInBtn").onclick=()=>auth("in");
   $("signUpBtn").onclick=()=>authMode==="up"?auth("up"):setAuthMode("up");
