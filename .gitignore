@@ -2,7 +2,6 @@
 financeiro-amigo-backup-*.json
 .hallmark/
 
-# React/Vite component sandbox
+# Local development build outputs
 node_modules/
 dist/
-*.tsbuildinfo
