@@ -1,3 +1,8 @@
 .DS_Store
 financeiro-amigo-backup-*.json
 .hallmark/
+
+# React/Vite component sandbox
+node_modules/
+dist/
+*.tsbuildinfo

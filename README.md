@@ -43,6 +43,10 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 A interface segue o sistema editorial do Ray documentado em [DESIGN.md](DESIGN.md). Inclui tema claro e modo escuro azul, com a preferência guardada localmente no navegador. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
+## Componente React experimental
+
+O repositório também contém o componente reutilizável [Glyph Portal](components/ui/glyph-portal.tsx) e uma demonstração [RayGlyphPortalDemo](components/ui/demo.tsx) e seus estilos [demo.css](components/ui/demo.css). Eles estão em `components/ui`, o diretório convencional dos componentes visuais shadcn. O site financeiro publicado ainda não carrega TSX: consulte [GLYPH-PORTAL-SETUP.md](GLYPH-PORTAL-SETUP.md) para criar um ambiente Vite + React + TypeScript + Tailwind e executar a demonstração sem substituir o app financeiro atual.
+
 ## Desenvolvimento
 
-O app é estático: HTML, CSS e JavaScript nativos. Não requer npm, build, banco externo, API key ou serviço pago. Para testar localmente, sirva a pasta raiz por HTTP ou abra a página em um host HTTPS; recursos PWA e IndexedDB precisam de um contexto seguro.
+O app financeiro publicado é estático: HTML, CSS e JavaScript nativos. Não requer npm, build, banco externo, API key ou serviço pago. Para testar localmente, sirva a pasta raiz por HTTP ou abra a página em um host HTTPS; recursos PWA e IndexedDB precisam de um contexto seguro. O projeto React do Glyph Portal é um ambiente separado, com setup documentado.
