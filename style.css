@@ -1748,3 +1748,24 @@ footer {
 .bank-card .mini-btn:hover { color: var(--color-accent); }
 .btn:hover { color: var(--color-accent); }
 .btn.primary:hover { color: var(--color-button-hover-ink); }
+
+/* Final contrast guard: keep the primary amount on a clean, opaque surface. */
+.summary-card, .panel, .bank-card, .goal-card, .report-summary .summary-card {
+  color: var(--color-ink);
+}
+.summary-card.balance-card::before,
+.summary-card.balance-card::after,
+.summary-grid:not(.report-summary) .balance-card::before,
+.summary-grid:not(.report-summary) .balance-card::after {
+  display: none;
+}
+.summary-grid:not(.report-summary) .balance-card strong {
+  display: inline-block;
+  padding: var(--space-1) 0;
+  background: var(--color-surface-hero);
+  color: var(--color-ink);
+}
+.brand-mark, .brand-mark.small {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+}
