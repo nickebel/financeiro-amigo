@@ -16,11 +16,19 @@ function toast(s,err=false){
  if(!err)toastTimer=window.setTimeout(dismissToast,3500);
 }
 function dismissToast(){const root=$("toast");if(root)root.classList.add("hidden")}
+function setMenuButtonState(isOpen){
+ const button=$("menuBtn");
+ if(!button)return;
+ button.setAttribute("aria-expanded",String(isOpen));
+ button.setAttribute("aria-label",isOpen?"Fechar menu":"Abrir menu");
+ button.title=isOpen?"Fechar menu":"Abrir menu";
+ button.textContent=isOpen?"×":"☰";
+}
 function closeMenu(){
  const nav=$("app")?.querySelector(".sidebar"),wasOpen=nav?.classList.contains("open");
  if(nav)nav.classList.remove("open");
- const button=$("menuBtn");
- if(button){button.setAttribute("aria-expanded","false");if(wasOpen)button.focus()}
+ setMenuButtonState(false);
+ if(wasOpen)$("menuBtn")?.focus();
 }
 function emptyState(title,description,action,kind){
  return '<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(description)+'</p><button type="button" class="text-btn" data-new="'+esc(kind)+'">'+esc(action)+'</button></div>';
@@ -84,7 +92,7 @@ function init(){
  $("navigation").onclick=e=>{const b=e.target.closest("[data-page]");if(b)go(b.dataset.page)};
  $("menuBtn").onclick=()=>{
   const nav=$("app").querySelector(".sidebar"),isOpen=nav.classList.toggle("open");
-  $("menuBtn").setAttribute("aria-expanded",String(isOpen));
+  setMenuButtonState(isOpen);
   if(isOpen)nav.querySelector("#navigation .nav-item")?.focus();
  };
  $("monthFilter").onchange=()=>{render();writeFilterState()};
