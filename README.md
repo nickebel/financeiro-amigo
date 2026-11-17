@@ -1,6 +1,6 @@
-# Meu Financeiro
+# Ray
 
-Um app financeiro pessoal com identidade Blue Mist Atmosphere, tons azul-petróleo, superfícies translúcidas discretas e tipografia editorial, sem login e sem cadastro. Abre diretamente no painel e guarda os lançamentos no próprio navegador por meio do IndexedDB.
+Ray é um app financeiro pessoal de identidade editorial minimalista, com tema claro e modo escuro em tons de azul. Não exige login nem cadastro. Abre diretamente no painel e guarda os lançamentos no próprio navegador por meio do IndexedDB.
 
 ## O que o app faz
 
@@ -41,7 +41,7 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 ## Design e qualidade
 
-A interface segue um sistema editorial minimalista monocromático documentado em [DESIGN.md](DESIGN.md), com espaço negativo generoso, uma única cor de ação, títulos serifados e texto corrido medido em até 60ch. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
+A interface segue o sistema editorial do Ray documentado em [DESIGN.md](DESIGN.md). Inclui tema claro e modo escuro azul, com a preferência guardada localmente no navegador. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
 ## Desenvolvimento
 

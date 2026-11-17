@@ -1,5 +1,6 @@
 const $=id=>document.getElementById(id),fmt=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n||0)),day=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},month=()=>day().slice(0,7),df=s=>s?new Date(s+"T12:00:00").toLocaleDateString("pt-BR"):"—",esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const LOCAL_PROFILE_ID="financeiro-amigo-local-profile";
+const THEME_STORAGE_KEY="ray-theme-preference";
 const cats=["Moradia","Alimentação","Transporte","Saúde","Educação","Lazer","Compras","Assinaturas","Salário","Freelance","Investimentos","Outros"],titles={dashboard:"Visão geral",transactions:"Lançamentos",cards:"Cartões e parcelas",bills:"Contas a pagar",goals:"Metas de economia",reports:"Relatórios"},tables={transaction:"transactions",card:"cards",installment:"installments",bill:"bills",goal:"goals"};
 let db=null,user,rows={transactions:[],cards:[],installments:[],bills:[],goals:[]},edit=null,kind=null;
 function parseMoney(value){const raw=String(value??"").trim().replace(/R\$|\s/g,"");if(!raw)return null;let normalized=raw;if(raw.includes(",")&&raw.includes(".")){normalized=raw.lastIndexOf(",")>raw.lastIndexOf(".")?raw.replace(/\./g,"").replace(",","."):raw.replace(/,/g,"")}else if(raw.includes(",")){normalized=raw.replace(",",".")}const number=Number(normalized);return Number.isFinite(number)?number:NaN}
@@ -50,7 +51,35 @@ function restoreUrlState(){
  if(requested!==page){const url=new URL(window.location.href);url.hash=page;history.replaceState({page},"",url)}
  go(page,false);
 }
+
+function applyTheme(theme,persist=false){
+ const mode=theme==="dark"?"dark":"light";
+ const dark=mode==="dark";
+ document.documentElement.dataset.theme=mode;
+ const meta=$("themeColorMeta");
+ if(meta)meta.setAttribute("content",dark?"#071B31":"#FAFAFA");
+ const button=$("themeToggleBtn"),label=$("themeToggleLabel");
+ if(button){
+  const next=dark?"Modo claro":"Modo azul";
+  if(label)label.textContent=next;
+  button.setAttribute("aria-pressed",String(dark));
+  button.setAttribute("aria-label",dark?"Ativar modo claro":"Ativar modo azul");
+  button.title=dark?"Mudar para tema claro":"Mudar para tema azul";
+ }
+ if(persist){
+  try{localStorage.setItem(THEME_STORAGE_KEY,mode)}catch(error){console.warn("Não foi possível guardar a preferência de tema:",error)}
+ }
+}
+function initTheme(){
+ let saved="light";
+ try{saved=localStorage.getItem(THEME_STORAGE_KEY)||"light"}catch(_){}
+ applyTheme(saved,false);
+ const button=$("themeToggleBtn");
+ if(button)button.addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark",true));
+}
+
 function init(){
+ initTheme();
  if($("monthFilter"))$("monthFilter").value=month();
  $("navigation").onclick=e=>{const b=e.target.closest("[data-page]");if(b)go(b.dataset.page)};
  $("menuBtn").onclick=()=>{
@@ -117,7 +146,7 @@ async function exportBackup(){
   const url=URL.createObjectURL(blob);
   const link=document.createElement("a");
   link.href=url;
-  link.download="financeiro-amigo-backup-"+day()+".json";
+  link.download="ray-backup-"+day()+".json";
   document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1000);
   toast("Backup baixado. Guarde o arquivo em um local seguro.");
  }catch(error){toast(error.message||"Não foi possível criar o backup.",true)}

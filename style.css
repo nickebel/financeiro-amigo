@@ -270,6 +270,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .summary-card.balance-card {
   border-color: var(--color-rule);
   background: var(--color-surface-panel);
+  color: var(--color-ink);
 }
 .summary-top {
   display: flex;
@@ -2405,4 +2406,106 @@ footer span { max-width: 60ch; text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+
+/* Ray · blue night theme. The light editorial theme remains the default. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #071B31;
+  --color-surface: #0B2745;
+  --color-ink: #EAF4FF;
+  --color-ink-soft: #C4D8EF;
+  --color-muted: #91AAC5;
+  --color-rule: #1D3B59;
+  --color-rule-strong: #315575;
+  --color-action: #63B3FF;
+  --color-action-ink: #061A2D;
+  --color-focus: #8CC8FF;
+  --color-positive: #C1DCFA;
+  --color-negative: #94B8DF;
+  --color-surface-subtle: #102F50;
+  --color-surface-hover: #14395E;
+  --color-chart-fill: #6DAEEB;
+  --color-backdrop: rgba(1, 10, 20, .76);
+  --color-menu-scrim: rgba(1, 10, 20, .72);
+
+  --color-paper: var(--color-bg);
+  --color-paper-2: #102F50;
+  --color-paper-3: #234565;
+  --color-white: var(--color-surface);
+  --color-ink-2: var(--color-ink-soft);
+  --color-field-edge: #365B7E;
+  --color-accent: var(--color-action);
+  --color-accent-deep: #A7D3FF;
+  --color-accent-wash: #153D62;
+  --color-accent-ink: var(--color-action-ink);
+  --color-positive-wash: #173A5B;
+  --color-negative-wash: #183653;
+  --color-error: #B9D7F5;
+  --color-surface-nav: #081F38;
+  --color-surface-panel: #0B2745;
+  --color-surface-hero: #0D2D4D;
+  --color-surface-sticky: #0B2745;
+  --color-surface-modal: #0D2947;
+  --color-surface-soft: #0D2B4A;
+  --color-surface-card: #0B2745;
+  --color-nav-active-border: #3977AE;
+  --color-nav-text: #C4D8EF;
+  --color-nav-muted: #91AAC5;
+  --color-nav-hover: #102F50;
+  --color-nav-divider: #244563;
+  --color-privacy-divider: #244563;
+  --color-on-dark-label: #EAF4FF;
+  --color-on-dark-muted: #A8C1DC;
+  --color-button-hover: #8CC8FF;
+  --color-button-hover-ink: #061A2D;
+  --color-overlay: rgba(1, 10, 20, .76);
+  --color-glass: #0B2745;
+  --color-glass-strong: #14395E;
+  --color-glass-edge: #315575;
+  --color-on-glass: #EAF4FF;
+}
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .app {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+:root[data-theme="dark"] .brand,
+:root[data-theme="dark"] .topbar-heading h2,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] strong {
+  color: var(--color-ink);
+}
+:root[data-theme="dark"] .institution-mark {
+  --mark-bg: var(--color-surface-hover) !important;
+  --mark-color: var(--color-ink-soft) !important;
+}
+:root[data-theme="dark"] .summary-card.balance-card {
+  border-bottom-color: var(--color-action);
+  color: var(--color-ink);
+}
+:root[data-theme="dark"] .amount-income,
+:root[data-theme="dark"] .amount-expense {
+  color: var(--color-ink-soft);
+}
+.theme-toggle { gap: var(--space-2); }
+.theme-toggle-symbol { font-size: 16px; line-height: 1; }
+:root[data-theme="dark"] .theme-toggle {
+  border-color: var(--color-action);
+  color: var(--color-ink);
+}
+@media (max-width: 48rem) {
+  .theme-toggle {
+    width: 44px;
+    min-width: 44px;
+    padding-inline: 0;
+    font-size: 0;
+  }
+  .theme-toggle-symbol { font-size: 18px; }
+}
+@media (max-width: 360px) {
+  .theme-toggle { width: 40px; min-width: 40px; }
 }

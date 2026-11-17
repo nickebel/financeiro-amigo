@@ -1,15 +1,15 @@
 /* App shell PWA; o conteúdo financeiro é guardado apenas no IndexedDB deste navegador. */
-const CACHE_NAME = "financeiro-amigo-shell-v11";
+const CACHE_NAME = "ray-shell-v12";
 const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   BASE_URL.href,
   new URL("index.html", BASE_URL).href,
-  new URL("style.css?v=20261117-15", BASE_URL).href,
-  new URL("app.js?v=20261117-3", BASE_URL).href,
-  new URL("pwa.js?v=20261117-2", BASE_URL).href,
+  new URL("style.css?v=20261117-16", BASE_URL).href,
+  new URL("app.js?v=20261117-10", BASE_URL).href,
+  new URL("pwa.js?v=20261117-3", BASE_URL).href,
   new URL("offline-store.js?v=20261117-2", BASE_URL).href,
   new URL("manifest.webmanifest", BASE_URL).href,
-  new URL("favicon.svg?v=20261117-5", BASE_URL).href,
+  new URL("favicon.svg?v=20261117-6", BASE_URL).href,
   new URL("app-icon.svg", BASE_URL).href,
   new URL("app-icon-maskable.svg", BASE_URL).href,
 
@@ -31,7 +31,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("financeiro-amigo-shell-") && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => (key.startsWith("financeiro-amigo-shell-") || key.startsWith("ray-shell-")) && key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
@@ -54,7 +54,7 @@ self.addEventListener("fetch", event => {
       } catch (_) {
         const cached = await caches.match(request) || await caches.match(new URL("index.html", BASE_URL).href) || await caches.match(BASE_URL.href);
         if (cached) return cached;
-        return new Response("Você está offline. Conecte-se à internet para abrir o Meu Financeiro.", {status: 503, headers: {"Content-Type": "text/plain; charset=utf-8"}});
+        return new Response("Você está offline. Conecte-se à internet para abrir o Ray.", {status: 503, headers: {"Content-Type": "text/plain; charset=utf-8"}});
       }
     })());
     return;
