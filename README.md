@@ -1,49 +1,47 @@
 # Meu Financeiro
 
-Aplicativo pessoal de controle financeiro, em português (pt-BR), com identidade visual azul e acesso privado.
+Um app financeiro pessoal, azul, sem login e sem cadastro. Abre diretamente no painel e guarda os lançamentos no próprio navegador por meio do IndexedDB.
 
-## O que já vem da base
+## O que o app faz
 
-- Visão geral com saldo, receitas e despesas.
-- Lançamentos de entradas e despesas.
-- Cartões de crédito e compras parceladas.
-- Contas a pagar.
-- Metas de economia.
-- Relatórios e gráficos.
-- Interface responsiva e instalável como PWA.
-- Sincronização com Supabase e políticas de Row Level Security (RLS).
+- Visão mensal com saldo, entradas e despesas.
+- Lançamentos de receitas e gastos.
+- Cartões e compras parceladas.
+- Contas a pagar e status de pagamento.
+- Metas de economia e contribuições.
+- Gráficos por categoria e relatórios.
+- Exportação e restauração de backup em JSON.
+- Instalação como PWA e abertura offline depois da primeira visita.
 
-## Acesso individual
+## Como os dados são guardados
 
-Este projeto foi preparado para **uma única conta autorizada**. O cadastro público fica oculto e bloqueado na interface. Crie a conta do usuário diretamente no painel do Supabase e desative novos cadastros nas configurações de autenticação.
+**Não existe conta, senha, banco remoto ou sincronização entre dispositivos.** O código e a publicação ficam no GitHub; os lançamentos financeiros ficam no IndexedDB do navegador/aparelho em que foram criados.
 
-A proteção dos dados não depende de esconder os botões: as tabelas usam RLS e cada usuário autenticado só pode ler e alterar registros cujo `user_id` corresponda ao próprio `auth.uid()`.
+Isso significa:
+- Abrir o mesmo endereço em outro celular ou computador começa com um espaço vazio.
+- Quem usar o mesmo perfil de navegador no mesmo aparelho poderá abrir e ver os dados locais.
+- Limpar os dados do navegador, remover o perfil ou perder o aparelho pode apagar os lançamentos.
+- Faça backups regularmente em **Baixar backup** e guarde o arquivo JSON em local seguro.
+- Para trocar de aparelho, abra o app no novo dispositivo e use **Restaurar** com o arquivo de backup.
 
-## Configuração do Supabase
+O backup contém informações financeiras pessoais. Não o envie ao repositório, não o compartilhe publicamente e não o deixe em um computador compartilhado.
 
-1. Crie um **novo projeto Supabase**, separado de qualquer outro financeiro.
-2. Abra o SQL Editor e execute todo o arquivo `supabase/schema.sql`.
-3. Em Authentication → Users, crie a conta do seu amigo e confirme o e-mail.
-4. Em Authentication → Settings, desative a opção que permite novos cadastros (Sign-ups).
-5. Em Project Settings → API, copie a Project URL e a chave pública publishable/anon.
-6. Faça uma cópia de `config.example.js` com o nome `config.js` e preencha esses dois valores. Esse arquivo precisa estar incluído no deploy; como ele está no `.gitignore`, ao usar Git local será necessário adicioná-lo explicitamente (`git add -f config.js`).
-7. Em Authentication → URL Configuration, configure a URL final do site como Site URL e como Redirect URL.
+## Publicação pelo GitHub Pages
 
-**Nunca coloque a chave `service_role`, senha do banco ou qualquer segredo administrativo em arquivos do navegador.** A chave publishable/anon pode ser usada no frontend porque o acesso aos dados é limitado pelas políticas RLS.
+O repositório já inclui um workflow em `.github/workflows/deploy-pages.yml` que publica o conteúdo da raiz por GitHub Actions.
 
-## Publicação
+1. Abra **Settings → Pages** e selecione **GitHub Actions** como fonte de publicação.
+2. Faça um push na branch `main` ou execute manualmente o workflow **Deploy to GitHub Pages**.
+3. Depois da primeira execução bem-sucedida, o endereço do site aparece em **Settings → Pages**.
 
-O repositório é privado. Ele pode ser conectado ao Cloudflare Pages para publicar a aplicação estática. Use:
-- Framework preset: None
-- Build command: `exit 0` (ou deixar vazio para site estático simples)
-- Build output directory: `.` (raiz do projeto)
+**Atenção ao plano do GitHub:** no GitHub Free, o repositório precisa ser público para usar GitHub Pages. O projeto está atualmente privado. Para publicar mantendo o repositório privado, o plano precisa incluir Pages em repositórios privados; isso não torna o site privado. A publicação privada do site requer GitHub Enterprise Cloud para uma organização. Consulte a [documentação oficial do GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
 
-Depois de configurar o Supabase e o `config.js`, faça o deploy e adicione a URL gerada em Authentication → URL Configuration.
+Como não há login, o site publicado é acessível a quem tiver o endereço. Os dados não são enviados pelo site; permanecem no dispositivo. Não use este modo em aparelho compartilhado.
 
-## Privacidade e observações
+## Design e qualidade
 
-- O banco deste projeto deve ser exclusivo para o Financeiro Amigo.
-- Os registros são inseridos manualmente; não existe conexão automática com bancos ou cartões.
-- O saldo é calculado a partir dos lançamentos cadastrados.
-- O app precisa de internet para autenticar e sincronizar. O cache offline guarda apenas recursos locais do aplicativo; dados financeiros continuam separados por usuário no IndexedDB e no Supabase.
-- Proteja também o celular/computador com senha ou biometria.
+A interface segue o sistema documentado em [DESIGN.md](DESIGN.md), inspirado na skill [Hallmark](https://github.com/Nutlope/hallmark) v2.0.0 e adaptado ao escopo de um app financeiro. O workflow **Hallmark design audit** roda a verificação estática de regras essenciais em cada push e pull request.
+
+## Desenvolvimento
+
+O app é estático: HTML, CSS e JavaScript nativos. Não requer npm, build, banco externo, API key ou serviço pago. Para testar localmente, sirva a pasta raiz por HTTP ou abra a página em um host HTTPS; recursos PWA e IndexedDB precisam de um contexto seguro.
