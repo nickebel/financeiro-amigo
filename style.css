@@ -19,6 +19,7 @@
   --color-negative: #A33B3B;
   --color-negative-wash: #FCEEEE;
   --color-focus: #2563EB;
+  --color-dot-grid: rgba(37, 99, 235, .13);
   --color-error: var(--color-negative);
   --dur-micro: 120ms;
   --dur-short: 220ms;
@@ -1016,4 +1017,34 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
   .topbar { gap: var(--space-2); }
   .topbar-heading h2 { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   #installAppBtn::before { content: "+"; font-family: var(--font-body); font-weight: 700; }
+}
+
+
+/* Detail chosen for Meu Financeiro: a quiet cobalt dot grid on the balance card only. */
+.summary-card.balance-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.summary-card.balance-card::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 0 auto;
+  width: min(38%, 220px);
+  background-image: radial-gradient(circle, var(--color-dot-grid) 1px, transparent 1.25px);
+  background-size: 14px 14px;
+  background-position: 0 0;
+  pointer-events: none;
+}
+.summary-card.balance-card > * {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 40rem) {
+  .summary-card.balance-card::after {
+    width: 32%;
+    opacity: .72;
+    background-size: 13px 13px;
+  }
 }
