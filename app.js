@@ -34,7 +34,7 @@ async function enterLocalSpace(){
  $("app").classList.remove("hidden");
  $("userEmail").textContent="Armazenamento local";
  $("avatar").textContent="M";
- $("todayLabel").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+ const todayLabel=$("todayLabel");if(todayLabel)todayLabel.textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
  await load();
 }
 async function refreshSyncStatus(){
@@ -52,7 +52,7 @@ async function exportBackup(){
   const link=document.createElement("a");
   link.href=url;
   link.download="financeiro-amigo-backup-"+day()+".json";
-  document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+  document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1000);
   toast("Backup baixado. Guarde o arquivo em um local seguro.");
  }catch(error){toast(error.message||"Não foi possível criar o backup.",true)}
 }
@@ -101,7 +101,7 @@ function renderCards(){
 function renderInstallments(){$("installmentsTable").innerHTML=rows.installments.length?'<div class="table-wrap"><table><thead><tr><th>Compra</th><th>Cartão</th><th>Total</th><th>Parcela mensal</th><th>Progresso</th><th>Ações</th></tr></thead><tbody>'+rows.installments.map(i=>'<tr><td>'+esc(i.description)+'</td><td>'+esc(rows.cards.find(c=>c.id===i.card_id)?.name||"—")+'</td><td>'+fmt(i.total_amount)+'</td><td>'+fmt(Number(i.total_amount)/Number(i.installments_count))+'</td><td>'+i.paid_installments+'/'+i.installments_count+'</td><td><button class="mini-btn" data-edit="installment" data-id="'+i.id+'">Editar</button> <button class="mini-btn danger" data-del="installment" data-id="'+i.id+'">Excluir</button></td></tr>').join("")+'</tbody></table></div>':'<div class="empty-state">Nenhuma compra parcelada cadastrada.</div>';actions($("installmentsTable"))}
 function renderBills(){$("billsTable").innerHTML=rows.bills.length?'<div class="table-wrap"><table><thead><tr><th>Conta</th><th>Vencimento</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody>'+[...rows.bills].sort((a,b)=>a.due_date.localeCompare(b.due_date)).map(b=>'<tr><td><strong>'+esc(b.name)+'</strong><br><small class="muted">'+esc(b.category||"Conta")+'</small></td><td>'+df(b.due_date)+'</td><td>'+fmt(b.amount)+'</td><td><span class="tag '+(b.paid?"paid":b.due_date<day()?"overdue":"")+'">'+(b.paid?"Paga":b.due_date<day()?"Atrasada":"Pendente")+'</span></td><td><button class="mini-btn" data-toggle="'+b.id+'">'+(b.paid?"Reabrir":"Marcar paga")+'</button> <button class="mini-btn" data-edit="bill" data-id="'+b.id+'">Editar</button> <button class="mini-btn danger" data-del="bill" data-id="'+b.id+'">Excluir</button></td></tr>').join("")+'</tbody></table></div>':'<div class="empty-state">Nenhuma conta cadastrada.</div>';actions($("billsTable"));$("billsTable").querySelectorAll("[data-toggle]").forEach(b=>b.onclick=()=>update("bills",b.dataset.toggle,{paid:!rows.bills.find(x=>x.id===b.dataset.toggle).paid}))}
 function renderGoals(){$("goalsList").innerHTML=rows.goals.length?rows.goals.map(g=>{let pct=Math.min(100,Number(g.target_amount)?Number(g.saved_amount)/Number(g.target_amount)*100:0);return '<article class="goal-card"><div class="goal-top"><span class="goal-icon">◎</span><div class="row-actions"><button class="mini-btn" data-edit="goal" data-id="'+g.id+'">Editar</button> <button class="mini-btn danger" data-del="goal" data-id="'+g.id+'">Excluir</button></div></div><h3>'+esc(g.name)+'</h3><p class="muted" style="font-size:12px">'+(g.target_date?"Meta até "+df(g.target_date):"Sem data definida")+'</p><strong>'+fmt(g.saved_amount)+'</strong><div class="goal-numbers"><span>de '+fmt(g.target_amount)+'</span><strong>'+Math.round(pct)+'%</strong></div><div class="goal-progress"><span style="width:'+pct+'%"></span></div><div class="goal-actions"><button class="btn secondary" data-contribute="'+g.id+'">＋ Registrar economia</button></div></article>'}).join(""):'<div class="panel empty-state">Crie uma meta para começar a guardar dinheiro.</div>';actions($("goalsList"));$("goalsList").querySelectorAll("[data-contribute]").forEach(b=>b.onclick=()=>open("contribution",rows.goals.find(g=>g.id===b.dataset.contribute)))}
-function reports(){let a=monthly(),inc=sum(a.filter(x=>x.type==="income")),exp=sum(a.filter(x=>x.type==="expense")),g=group(a.filter(x=>x.type==="expense"));$("savingRate").textContent=inc?Math.round((inc-exp)/inc*100)+"%":"—";$("topCategory").textContent=g[0]?.[0]||"—";$("reportCategories").innerHTML=bars(g)}
+function reports(){let a=monthly(),inc=sum(a.filter(x=>x.type==="income")),exp=sum(a.filter(x=>x.type==="expense")),g=group(a.filter(x=>x.type==="expense"));$("savingRate").textContent=inc?Math.round((inc-exp)/inc*100)+"%":"Sem dados";$("topCategory").textContent=g[0]?.[0]||"Sem dados";$("reportCategories").innerHTML=bars(g)}
 function actions(root){root.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>open(b.dataset.edit,find(b.dataset.edit,b.dataset.id)));root.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>remove(b.dataset.del,b.dataset.id))}
 function find(k,id){return rows[tables[k]].find(x=>x.id===id)}
 async function remove(k,id){
