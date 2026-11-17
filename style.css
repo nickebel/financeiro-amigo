@@ -1443,6 +1443,7 @@ body {
 
 /* Navigation: deep ocean surface, readable before decorative. */
 .sidebar {
+  color: var(--color-ink);
   border-bottom: 1px solid var(--color-glass-edge);
   background: var(--color-surface-nav);
   color: var(--color-ink);
@@ -1505,6 +1506,7 @@ body {
   background: var(--color-surface-panel);
 }
 .summary-card.balance-card {
+  color: var(--color-ink);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -1520,7 +1522,7 @@ body {
   inset: 0;
   width: 100%;
   pointer-events: none;
-  opacity: .48;
+  opacity: .2;
   background-image: url("./blue-mist-atmosphere.svg");
   background-repeat: no-repeat;
   background-size: 190% auto;
@@ -1543,7 +1545,12 @@ body {
 }
 .summary-card.balance-card > * { position: relative; z-index: 1; }
 .summary-card.balance-card .summary-top {
-  color: var(--color-on-dark-label);
+  display: inline-flex;
+  width: max-content;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-hero);
+  color: var(--color-ink);
   font-size: 13px;
   letter-spacing: 0;
   text-transform: none;
@@ -1557,6 +1564,7 @@ body {
 }
 .summary-card.balance-card small { color: var(--color-on-dark-muted); }
 .summary-card:not(.balance-card) {
+  color: var(--color-ink);
   border-left: 1px solid var(--color-glass-edge);
   border-bottom: 1px solid var(--color-glass-edge);
   background: var(--color-surface-panel);
@@ -1576,6 +1584,7 @@ body {
 .bank-card,
 .goal-card,
 .report-summary .summary-card {
+  color: var(--color-ink);
   border: 1px solid var(--color-glass-edge);
   border-radius: 20px 5px 20px 5px;
   background: var(--color-surface-panel);
@@ -1695,6 +1704,7 @@ footer {
 }
 .modal-backdrop::backdrop { background: var(--color-overlay); }
 .modal {
+  color: var(--color-ink);
   border: 1px solid var(--color-glass-edge);
   border-radius: 22px 5px 22px 5px;
   background: var(--color-surface-modal);
@@ -1703,6 +1713,7 @@ footer {
 }
 .modal-head h3 { color: var(--color-ink); }
 .toast {
+  color: var(--color-ink);
   border-color: var(--color-glass-edge);
   border-radius: 12px 4px 12px 4px;
   background: var(--color-surface-modal);
@@ -1729,3 +1740,8 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .app::before, .app::after, .main::before { filter: none; }
 }
+
+/* Contrast refinements: labels and actions remain readable over the artwork. */
+.bank-card .mini-btn:hover { color: var(--color-accent); }
+.btn:hover { color: var(--color-accent); }
+.btn.primary:hover { color: var(--color-button-hover-ink); }
