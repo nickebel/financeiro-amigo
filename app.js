@@ -16,9 +16,10 @@ function toast(s,err=false){
 }
 function dismissToast(){const root=$("toast");if(root)root.classList.add("hidden")}
 function closeMenu(){
- const nav=$("app")?.querySelector(".sidebar");
+ const nav=$("app")?.querySelector(".sidebar"),wasOpen=nav?.classList.contains("open");
  if(nav)nav.classList.remove("open");
- const button=$("menuBtn");if(button)button.setAttribute("aria-expanded","false");
+ const button=$("menuBtn");
+ if(button){button.setAttribute("aria-expanded","false");if(wasOpen)button.focus()}
 }
 function emptyState(title,description,action,kind){
  return '<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(description)+'</p><button type="button" class="text-btn" data-new="'+esc(kind)+'">'+esc(action)+'</button></div>';
@@ -46,7 +47,7 @@ function restoreUrlState(){
  if(/^\d{4}-\d{2}$/.test(selectedMonth||""))$("monthFilter").value=selectedMonth;
  $("typeFilter").value=type==="income"||type==="expense"?type:"";
  const requested=window.location.hash.slice(1),page=titles[requested]?requested:"dashboard";
- if(!window.location.hash){const url=new URL(window.location.href);url.hash=page;history.replaceState({page},"",url)}
+ if(requested!==page){const url=new URL(window.location.href);url.hash=page;history.replaceState({page},"",url)}
  go(page,false);
 }
 function init(){
@@ -55,6 +56,7 @@ function init(){
  $("menuBtn").onclick=()=>{
   const nav=$("app").querySelector(".sidebar"),isOpen=nav.classList.toggle("open");
   $("menuBtn").setAttribute("aria-expanded",String(isOpen));
+  if(isOpen)nav.querySelector("#navigation .nav-item")?.focus();
  };
  $("monthFilter").onchange=()=>{render();writeFilterState()};
  $("quickAddBtn").onclick=$("addTransactionBtn").onclick=()=>open("transaction");
@@ -76,6 +78,8 @@ function init(){
  });
  $("toastCloseBtn").onclick=dismissToast;
  document.addEventListener("click",e=>{
+  const sidebar=$("app").querySelector(".sidebar");
+  if(sidebar.classList.contains("open")&&!e.target.closest(".sidebar")&&!e.target.closest("#menuBtn"))closeMenu();
   const create=e.target.closest("[data-new]"),destination=e.target.closest("[data-goto]");
   if(create){open(create.dataset.new);closeMenu();return}
   if(destination){go(destination.dataset.goto);return}
@@ -124,10 +128,8 @@ async function restoreBackup(event){
  try{
   if(file.size>5*1024*1024)throw new Error("O arquivo é maior que o limite de 5 MB.");
   if(!window.confirm("Restaurar este backup substituirá os dados atuais deste aparelho. Exporte um backup atual antes de continuar. Deseja prosseguir?"))return;
-  const result=await FinanceOffline.restoreBackup(user.id,await file.text());
+  await FinanceOffline.restoreBackup(user.id,await file.text());
   rows=await FinanceOffline.getRows(user.id);render();go("dashboard");
-  const total=Object.values(result.counts).reduce((sum,value)=>sum+value,0);
-  toast(total+" registro(s) restaurado(s) com sucesso.");
  }catch(error){toast(error.message||"Não foi possível restaurar este backup.",true)}
  finally{event.target.value=""}
 }
