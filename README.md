@@ -1,6 +1,6 @@
 # Meu Financeiro
 
-Um app financeiro pessoal, azul, sem login e sem cadastro. Abre diretamente no painel e guarda os lançamentos no próprio navegador por meio do IndexedDB.
+Um app financeiro pessoal com identidade Rich Blue e composição editorial, sem login e sem cadastro. Abre diretamente no painel e guarda os lançamentos no próprio navegador por meio do IndexedDB.
 
 ## O que o app faz
 
@@ -41,7 +41,7 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 ## Design e qualidade
 
-A interface segue o sistema documentado em [DESIGN.md](DESIGN.md), aplicado em um redesign de app-screen com a skill [Hallmark](https://github.com/Nutlope/hallmark) v2.0.0. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
+A interface segue o sistema visual Rich Blue × editorial paper documentado em [DESIGN.md](DESIGN.md), com duas famílias tipográficas locais e composição assimétrica. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
 ## Desenvolvimento
 
