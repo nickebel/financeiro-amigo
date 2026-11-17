@@ -632,6 +632,7 @@ textarea { min-height: 104px; resize: vertical; }
   font-size: 12px;
 }
 .toast.error { border-color: var(--color-negative); color: var(--color-negative); }
+#toast:empty { display: none; }
 footer {
   display: flex;
   justify-content: space-between;
