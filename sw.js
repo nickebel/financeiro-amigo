@@ -1,10 +1,10 @@
 /* App shell PWA; o conteúdo financeiro é guardado apenas no IndexedDB deste navegador. */
-const CACHE_NAME = "financeiro-amigo-shell-v9";
+const CACHE_NAME = "financeiro-amigo-shell-v10";
 const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   BASE_URL.href,
   new URL("index.html", BASE_URL).href,
-  new URL("style.css?v=20261117-13", BASE_URL).href,
+  new URL("style.css?v=20261117-14", BASE_URL).href,
   new URL("app.js?v=20261117-3", BASE_URL).href,
   new URL("pwa.js?v=20261117-2", BASE_URL).href,
   new URL("offline-store.js?v=20261117-2", BASE_URL).href,

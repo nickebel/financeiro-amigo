@@ -1,59 +1,54 @@
 # Design System — Meu Financeiro
 
-**Sistema visual:** Blue Mist Atmosphere — Rich Blue em uma atmosfera oceânica, translúcida e cinematográfica.
-**Referência:** composição vertical em tons azul-petróleo, névoa, superfícies foscas e formas fluidas abstratas fornecida pelo usuário.
-**Escopo:** aplicativo financeiro pessoal; a referência inspira a atmosfera, não a estrutura de uma landing page institucional.
+**Sistema visual:** Blue Mist Atmosphere — Rich Blue em uma atmosfera oceânica.
+**Escopo:** aplicativo financeiro pessoal com prioridade para leitura, consistência e dados legíveis.
 
-## Produto e integridade
+## Integridade do produto
 
-O usuário registra manualmente entradas e despesas e acompanha saldo do período, vencimentos, cartões, parcelas, metas e relatórios.
+O app mantém os seis destinos, os formulários, IDs, handlers, CRUD, cálculos, IndexedDB, backup manual, PWA e fluxo offline. Nenhum dado financeiro é enviado para serviço remoto.
 
-O app permanece sem login, senha, conta, API, banco remoto ou sincronização automática. Os dados ficam no IndexedDB deste navegador/aparelho. Backup JSON é sempre manual, pertence ao usuário e nunca deve ser incluído no repositório.
+## Paleta
 
-Preservar os seis destinos, todos os formulários, IDs, handlers, operações CRUD, cálculos, campos, valores, estados de carregamento/vazio/erro, PWA e fluxo offline.
+- Fundo profundo: `#071F27`
+- Petróleo principal: `#0B2932`
+- Superfície oceânica: `#153D47`
+- Superfície elevada: `#285560`
+- Azul-luz: `#ADEBFF`
+- Texto principal: `#EEF8F3`
+- Texto secundário: `#D2E6E0`
+- Texto auxiliar: `#A8C5C1`
+- Entrada positiva: `#91DCC0`
+- Despesa/erro: `#FFB9B9`
 
-## Paleta e atmosfera
-
-A base Rich Blue evolui para um conjunto atmosférico azul-petróleo e verde-água:
-
-- Fundo profundo: `#071F27` / `#0B2932`.
-- Oceano e elevação: `#153D47` / `#285560`.
-- Azul-luz: `#ADEBFF`.
-- Tipografia clara: `#EEF8F3`.
-- Entradas positivas: verde-água claro; despesas: coral suave.
-
-Usar gradientes radiais amplos e muito suaves para sugerir névoa e relevos. Não usar gradiente azul-roxo. Texturas e curvas ficam atrás do conteúdo e nunca reduzem o contraste.
+Sem gradientes azul-roxo genéricos. O fundo atmosférico não pode competir com textos e valores.
 
 ## Tipografia
 
-No máximo duas famílias, sem dependências externas:
+No máximo duas famílias, sem fontes remotas:
 
-- Display: Baskerville / Iowan Old Style / Palatino / Georgia, em títulos e valores de destaque.
+- Display: Baskerville / Iowan Old Style / Palatino / Georgia para títulos e valores de destaque.
 - Interface: Segoe UI e fallback sans-serif do sistema para corpo, navegação, dados e controles.
 
-## Composição
+## Leitura e ritmo
 
-- Fundo imersivo azul-petróleo em camadas, com uma ilustração SVG original de ondas e dunas abstratas incluída no cache offline.
-- Navegação em vidro fosco discreto, com contraste e estado atual claros.
-- O saldo é o foco: painel amplo e escuro, com reflexos azul-claro suaves e formas curvas abstratas.
-- Entradas e despesas permanecem subordinadas, separadas por linhas e espaços.
-- Painéis usam superfícies azul-petróleo sólidas com bordas suaves; a atmosfera vem da arte de fundo, não de blur atrás de texto, preservando contraste.
-- Tabelas ficam abertas e legíveis, com linhas de separação e colunas sticky de fundo sólido o suficiente.
-- No celular, o saldo aparece primeiro, os indicadores se empilham e os painéis mantêm contraste e toque acessível.
-- Não reproduzir conteúdo de marketing, hero turístico, CTA de venda, chat flutuante ou rodapé de template.
+- Blocos de texto corrido limitados a 62ch; blocos longos não excedem 65ch.
+- Parágrafos usam `text-wrap: pretty`; títulos h1, h2 e h3 usam `text-wrap: balance`.
+- Texto de leitura, cards e listas é alinhado à esquerda.
+- Títulos usam `clamp()` e line-height entre 1.1 e 1.2; corpo usa line-height 1.55.
+- Palavras nunca quebram no meio; navegação, botões, tags e ações mantêm seus rótulos em uma linha.
+- Valores monetários e códigos permanecem inteiros e usam tamanhos responsivos para evitar overflow.
+- Colunas seguem grids com `minmax(0, ...)`, evitando alargamento por conteúdo longo.
+- Cartões e metas usam uma distribuição assimétrica 7/5 em telas largas, empilhando no celular.
+- Painel de resumo mantém saldo como elemento dominante; entradas e despesas ficam em segundo plano.
+- Tabelas usam rolagem horizontal local em telas pequenas, sem quebrar rótulos ou números.
 
-## Componentes e acessibilidade
+## Responsividade e acessibilidade
 
-- Botões de ação em azul-luz ou azul-prussiano, sem efeito glass exagerado.
-- Campos com superfície escura, borda definida, rótulos visíveis e foco claro.
-- Diálogos usam `<dialog>` nativo.
-- Alvos de toque com pelo menos 44px; inputs móveis em 16px.
-- Estados de carregamento, vazio e erro continuam presentes.
-- Movimento respeita `prefers-reduced-motion`; efeitos atmosféricos não devem ser necessários para compreender a tela.
+- Navegação desktop cede lugar ao menu móvel já existente em telas estreitas.
+- Seções e cabeçalhos empilham antes de causar compressão dos botões.
+- Controles mantêm pelo menos 44px de alvo tátil; inputs móveis permanecem em 16px.
+- Contraste, foco visível e `prefers-reduced-motion` permanecem obrigatórios.
 
 ## Privacidade
 
-- Nunca adicionar token, chave, senha ou endpoint remoto para ler/escrever dados financeiros.
-- Nunca versionar backups JSON.
-- Sem autenticação, o site publicado é acessível a quem tiver o endereço.
-- Nunca adicionar sincronização automática sem redesenhar a arquitetura e explicar as implicações.
+Sem login, API, banco remoto ou sincronização automática. Backups JSON são manuais e nunca devem ser versionados.

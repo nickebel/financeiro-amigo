@@ -41,7 +41,7 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 ## Design e qualidade
 
-A interface segue o sistema visual Blue Mist Atmosphere documentado em [DESIGN.md](DESIGN.md), com atmosfera oceânica, tipografia editorial local e superfícies foscas discretas. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
+A interface segue o sistema visual Blue Mist Atmosphere documentado em [DESIGN.md](DESIGN.md), com tipografia editorial local, texto corrido medido em 62ch, títulos equilibrados e layout responsivo orientado à leitura. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
 ## Desenvolvimento
 
