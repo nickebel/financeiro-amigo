@@ -1,4 +1,5 @@
-/* Ray Glyph Portal — HTML + CSS nativos, sem React ou bibliotecas. */
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Ray rich blue portal · scope: app · v2.0.0 */
+/* Ray Glyph Portal — HTML, CSS e JavaScript nativos, sem React ou bibliotecas. */
 :root {
   color-scheme: light;
   --portal-paper: #FAFAFA;
@@ -9,14 +10,25 @@
   --portal-copy: #D7E4F0;
   --portal-action: #63B3FF;
   --portal-action-ink: #061A2D;
+  --portal-mask: #111111;
+  --portal-focus-light: #8CC8FF;
+  --portal-focus-dark: #003459;
+  --portal-action-hover: #8CC8FF;
+  --portal-action-active: #378DDA;
+  --portal-meta: #707070;
+  --portal-heavy: "Arial Black", Impact, Arial, sans-serif;
   --portal-font: Arial, "Segoe UI", sans-serif;
   --portal-display: Georgia, "Times New Roman", serif;
 }
 
 * { box-sizing: border-box; }
 
-html {
+html, body {
   min-height: 100%;
+  overflow-x: clip;
+}
+
+html {
   background: var(--portal-paper);
   scroll-behavior: smooth;
   scrollbar-color: var(--portal-blue) var(--portal-paper);
@@ -36,7 +48,7 @@ body {
 a { color: inherit; }
 
 a:focus-visible {
-  outline: 3px solid var(--portal-action);
+  outline: 3px solid var(--portal-focus-dark);
   outline-offset: 5px;
 }
 
@@ -48,7 +60,7 @@ a:focus-visible {
   display: inline-flex;
   min-height: 42px;
   align-items: center;
-  padding: 0 14px;
+  padding: 0 12px;
   background: var(--portal-paper);
   color: var(--portal-ink);
   font-size: 12px;
@@ -125,8 +137,8 @@ a:focus-visible {
 }
 
 #ray-glyph {
-  fill: #000;
-  font-family: "Arial Black", Impact, Arial, sans-serif;
+  fill: var(--portal-mask);
+  font-family: var(--portal-heavy);
   font-size: 100px;
   font-weight: 900;
   font-kerning: none;
@@ -173,7 +185,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 16px;
   color: var(--portal-white);
   font-size: 12px;
   opacity: var(--gp-caption, 1);
@@ -183,13 +195,22 @@ a:focus-visible {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   color: inherit;
   font-weight: 700;
   text-decoration: none;
 }
 
 .gp-caption a:hover { color: var(--portal-action); }
+.gp-logo:focus-visible,
+.gp-caption a:focus-visible { outline-color: var(--portal-focus-light); }
+.gp-entry:focus-visible,
+.gp-footer a:focus-visible { outline-color: var(--portal-focus-dark); }
+.portal-skip:active,
+.gp-logo:active,
+.gp-caption a:active,
+.gp-entry:active,
+.gp-footer a:active { opacity: .72; }
 
 .gp-fallback {
   position: absolute;
@@ -198,7 +219,7 @@ a:focus-visible {
   display: none;
   place-items: center;
   color: var(--portal-white);
-  font-family: "Arial Black", Impact, Arial, sans-serif;
+  font-family: var(--portal-heavy);
   font-size: clamp(90px, 31vw, 440px);
   font-weight: 900;
   letter-spacing: -.1em;
@@ -231,7 +252,6 @@ a:focus-visible {
   color: var(--portal-muted);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: .16em;
 }
 
 .gp-content-grid {
@@ -266,8 +286,8 @@ a:focus-visible {
   display: inline-flex;
   min-height: 48px;
   align-items: center;
-  gap: 22px;
-  padding: 0 18px;
+  gap: 20px;
+  padding: 0 16px;
   background: var(--portal-action);
   color: var(--portal-action-ink);
   font-size: 13px;
@@ -277,7 +297,7 @@ a:focus-visible {
 }
 
 .gp-entry:hover {
-  background: #8CC8FF;
+  background: var(--portal-action-hover);
   transform: translateY(-2px);
 }
 
@@ -294,9 +314,9 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px clamp(24px, 5vw, 56px);
+  padding: 16px clamp(24px, 5vw, 56px);
   background: var(--portal-paper);
-  color: #707070;
+  color: var(--portal-meta);
   font-size: 11px;
 }
 
