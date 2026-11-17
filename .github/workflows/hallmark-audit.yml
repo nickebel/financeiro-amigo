@@ -58,7 +58,5 @@ jobs:
         with:
           name: hallmark-before-after
           path: |
-            .hallmark/before.txt
-            .hallmark/before.json
-            .hallmark/compare.html
+            .hallmark/
           if-no-files-found: warn
