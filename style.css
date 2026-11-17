@@ -686,7 +686,6 @@ footer {
     right: auto;
     padding: var(--space-5);
     border-right: 1px solid var(--color-rule);
-    box-shadow: var(--shadow-menu);
   }
   .sidebar.open #navigation {
     display: grid;
