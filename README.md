@@ -35,8 +35,8 @@ A proteção dos dados não depende de esconder os botões: as tabelas usam RLS 
 
 O repositório é privado. Ele pode ser conectado ao Cloudflare Pages para publicar a aplicação estática. Use:
 - Framework preset: None
-- Build command: deixar vazio
-- Build output directory: `/` ou `.` (raiz do projeto)
+- Build command: `exit 0` (ou deixar vazio para site estático simples)
+- Build output directory: `.` (raiz do projeto)
 
 Depois de configurar o Supabase e o `config.js`, faça o deploy e adicione a URL gerada em Authentication → URL Configuration.
 
