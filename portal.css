@@ -205,8 +205,8 @@ a:focus-visible {
 
 .gp-caption a:hover { color: var(--portal-action); }
 .gp-logo:focus-visible,
-.gp-caption a:focus-visible { outline-color: var(--portal-focus-light); }
-.gp-entry:focus-visible,
+.gp-caption a:focus-visible,
+.gp-entry:focus-visible { outline-color: var(--portal-focus-light); }
 .gp-footer a:focus-visible { outline-color: var(--portal-focus-dark); }
 .portal-skip:active,
 .gp-logo:active,
@@ -364,7 +364,7 @@ a:focus-visible {
 @media (max-width: 420px) {
   .gp-caption { align-items: flex-end; }
   .gp-caption > span { max-width: 15ch; }
-  .gp-front p { max-width: 16ch; }
+  .gp-front p { max-width: 28ch; }
   .gp-footer span { display: none; }
 }
 
