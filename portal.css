@@ -1,5 +1,7 @@
 /* Hallmark · shape: app screen · genre: modern-minimal · theme: Ray rich blue portal · scope: app · v2.0.0 */
 /* Ray Glyph Portal — HTML, CSS e JavaScript nativos, sem React ou bibliotecas. */
+/* Hallmark · dropped {"#" + uid + "-content"} · the static HTML uses the stable #portal-content target instead of a React-generated id. */
+
 :root {
   color-scheme: light;
   --portal-paper: #FAFAFA;
