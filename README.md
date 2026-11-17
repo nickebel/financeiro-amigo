@@ -43,9 +43,13 @@ Como não há login, o site publicado é acessível a quem tiver o endereço. Os
 
 A interface segue o sistema editorial do Ray documentado em [DESIGN.md](DESIGN.md). Inclui tema claro e modo escuro azul, com a preferência guardada localmente no navegador. O workflow **Hallmark design audit** roda as verificações de JavaScript, renderização, estados e preservação de controles em cada pull request e push na branch principal.
 
-## Componente React experimental
+## Experiência Glyph Portal
 
-O repositório também contém o componente reutilizável [Glyph Portal](components/ui/glyph-portal.tsx) e uma demonstração [RayGlyphPortalDemo](components/ui/demo.tsx) e seus estilos [demo.css](components/ui/demo.css). Eles estão em `components/ui`, o diretório convencional dos componentes visuais shadcn. O site financeiro publicado ainda não carrega TSX: consulte [GLYPH-PORTAL-SETUP.md](GLYPH-PORTAL-SETUP.md) para criar um ambiente Vite + React + TypeScript + Tailwind e executar a demonstração sem substituir o app financeiro atual.
+O Ray inclui uma experiência visual de entrada em `portal.html`, feita com HTML, CSS e JavaScript nativos — sem React, TypeScript, Tailwind, Vite ou dependências de build. A animação aproxima a câmera da tipografia “RAY” conforme a pessoa rola a página e revela o conteúdo do portal.
+
+Abra pelo link **Conheça o Ray** no painel ou diretamente em `/portal.html`. A experiência é opcional: o painel financeiro continua sendo a página inicial e os lançamentos existentes permanecem no mesmo IndexedDB. O portal também respeita a preferência do navegador por movimento reduzido.
+
+Arquivos: `portal.html`, `portal.css` e `portal.js`.
 
 ## Desenvolvimento
 

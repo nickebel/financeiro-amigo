@@ -30,10 +30,9 @@ jobs:
           node --check offline-store.js
           node --check pwa.js
           node --check sw.js
-      - name: Install browser audit and TSX check dependencies
-        run: npm install --no-save --package-lock=false puppeteer-core typescript react @types/react vite
-      - name: Check Glyph Portal TypeScript
-        run: npx tsc --noEmit --project tsconfig.glyph-portal.json
+          node --check portal.js
+      - name: Install browser audit dependencies
+        run: npm install --no-save --package-lock=false puppeteer-core
       - name: Record the original app screen
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
