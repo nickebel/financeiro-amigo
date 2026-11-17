@@ -11,7 +11,7 @@
 <link rel="icon" href="favicon.svg?v=20261117-6" type="image/svg+xml">
 <link rel="apple-touch-icon" href="app-icon.svg">
 
-<link rel="stylesheet" href="style.css?v=20261117-16">
+<link rel="stylesheet" href="style.css?v=20261117-17">
 
 
 </head>
@@ -20,7 +20,9 @@
 <div id="authScreen" class="hidden" aria-hidden="true"></div>
 <div id="app" class="app hidden">
   <aside class="sidebar">
-    <a class="brand" href="./" aria-label="Ray"><span>Ray</span></a>
+    <div class="sidebar-head">
+      <a class="brand" href="./" aria-label="Ray"><span>Ray</span></a>
+    </div>
     <nav id="navigation">
       <button type="button" class="nav-item active" data-page="dashboard" aria-current="page"><span>◫</span> Visão geral</button>
       <button type="button" class="nav-item" data-page="transactions"><span>↕</span> Lançamentos</button>
@@ -41,7 +43,7 @@
         <button id="exportBackupBtn" class="btn secondary backup-btn" type="button" aria-label="Baixar backup" title="Baixar backup">Baixar backup</button>
         <button id="importBackupBtn" class="btn secondary backup-btn" type="button" aria-label="Restaurar backup" title="Restaurar backup">Restaurar</button>
         <input id="backupFileInput" class="hidden" type="file" accept="application/json,.json">
-        <button id="installAppBtn" class="btn secondary install-app-btn" type="button" aria-label="Instalar aplicativo" title="Instalar Ray">Instalar Ray</button>
+        <button id="installAppBtn" class="btn secondary install-app-btn" type="button" aria-label="Instalar app" title="Instalar app">Instalar app</button>
         <p id="installHelp" class="install-help hidden">No celular, abra o menu do navegador e escolha “Instalar app” ou “Adicionar à tela inicial”.</p>
       </div>
     </header>
@@ -94,6 +96,6 @@
 
 
 <script src="offline-store.js?v=20261117-2"></script>
-<script src="app.js?v=20261117-10"></script>
-<script src="pwa.js?v=20261117-3"></script>
+<script src="app.js?v=20261117-11"></script>
+<script src="pwa.js?v=20261117-4"></script>
 </body></html>
