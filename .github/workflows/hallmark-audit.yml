@@ -28,5 +28,7 @@ jobs:
           node --check offline-store.js
           node --check pwa.js
           node --check sw.js
-      - name: Run Hallmark app-screen floor
-        run: node .tools/hallmark/skills/hallmark/scripts/sloplint.mjs . --scope app --genre modern-minimal --tier floor
+      - name: Install browser audit dependency
+        run: npm install --no-save --package-lock=false puppeteer-core
+      - name: Run Hallmark app-screen audit
+        run: node .tools/hallmark/skills/hallmark/scripts/sloplint.mjs . --scope app --genre modern-minimal --render
