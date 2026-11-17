@@ -2632,3 +2632,28 @@ footer span { max-width: 60ch; text-align: left; }
   .sidebar-head { display: contents; }
   .sidebar .mobile-menu { display: none; }
 }
+
+
+/* Link to the optional Glyph Portal experience. */
+.portal-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 8px 0;
+  color: var(--color-action);
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.portal-shortcut:hover { text-decoration: underline; text-underline-offset: 4px; }
+.portal-shortcut:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  .welcome-row { flex-wrap: wrap; }
+  .portal-shortcut { margin-left: 0; margin-right: auto; order: 3; }
+}
