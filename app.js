@@ -32,8 +32,6 @@ async function enterLocalSpace(){
  user={id:LOCAL_PROFILE_ID,email:"Salvo neste aparelho",offlineOnly:true};
  $("authScreen").classList.add("hidden");
  $("app").classList.remove("hidden");
- $("userEmail").textContent="Armazenamento local";
- $("avatar").textContent="M";
  const todayLabel=$("todayLabel");if(todayLabel)todayLabel.textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
  await load();
 }
