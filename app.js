@@ -4,28 +4,91 @@ const cats=["Moradia","Alimentação","Transporte","Saúde","Educação","Lazer"
 let db=null,user,rows={transactions:[],cards:[],installments:[],bills:[],goals:[]},edit=null,kind=null;
 function parseMoney(value){const raw=String(value??"").trim().replace(/R\$|\s/g,"");if(!raw)return null;let normalized=raw;if(raw.includes(",")&&raw.includes(".")){normalized=raw.lastIndexOf(",")>raw.lastIndexOf(".")?raw.replace(/\./g,"").replace(",","."):raw.replace(/,/g,"")}else if(raw.includes(",")){normalized=raw.replace(",",".")}const number=Number(normalized);return Number.isFinite(number)?number:NaN}
 function msg(id,s){const node=$(id);if(node)node.textContent=s||""}
-function toast(s,err=false){const e=$("toast");if(!e)return;e.textContent=s;e.classList.toggle("error",err);e.classList.remove("hidden");window.setTimeout(()=>e.classList.add("hidden"),3500)}
+let toastTimer;
+function toast(s,err=false){
+ const root=$("toast"),label=$("toastMessage"),closeButton=$("toastCloseBtn");
+ if(!root||!label)return;
+ window.clearTimeout(toastTimer);
+ label.textContent=s;root.classList.remove("hidden");root.classList.toggle("error",err);
+ root.setAttribute("role",err?"alert":"status");root.setAttribute("aria-live",err?"assertive":"polite");
+ if(closeButton)closeButton.hidden=!err;
+ if(!err)toastTimer=window.setTimeout(dismissToast,3500);
+}
+function dismissToast(){const root=$("toast");if(root)root.classList.add("hidden")}
+function closeMenu(){
+ const nav=$("app")?.querySelector(".sidebar");
+ if(nav)nav.classList.remove("open");
+ const button=$("menuBtn");if(button)button.setAttribute("aria-expanded","false");
+}
+function emptyState(title,description,action,kind){
+ return '<div class="empty-state"><strong>'+esc(title)+'</strong><p>'+esc(description)+'</p><button type="button" class="text-btn" data-new="'+esc(kind)+'">'+esc(action)+'</button></div>';
+}
+function showDashboardSkeletons(){
+ const line='<div class="skeleton-row"><span class="skeleton skeleton-label"></span><span class="skeleton skeleton-value"></span></div>';
+ const rows=line+line+line+line;
+ $("content").setAttribute("aria-busy","true");
+ $("categoryChart").innerHTML='<div class="skeleton-stack" aria-hidden="true">'+rows+'</div>';
+ $("upcomingBills").innerHTML='<div class="skeleton-stack" aria-hidden="true">'+line+line+'</div>';
+ $("recentTransactions").innerHTML='<div class="skeleton-stack" aria-hidden="true">'+rows+'</div>';
+}
+function loadErrorState(id,message){
+ const node=$(id);
+ if(node)node.innerHTML='<div class="empty-state error-state" role="alert"><strong>Não foi possível carregar</strong><p>'+esc(message)+'</p><button type="button" class="text-btn" data-reload>Recarregar</button></div>';
+}
+function writeFilterState(){
+ const url=new URL(window.location.href),selectedMonth=$("monthFilter").value,type=$("typeFilter").value;
+ if(/^\\d{4}-\\d{2}$/.test(selectedMonth))url.searchParams.set("month",selectedMonth);else url.searchParams.delete("month");
+ if(type==="income"||type==="expense")url.searchParams.set("type",type);else url.searchParams.delete("type");
+ history.replaceState(history.state,"",url);
+}
+function restoreUrlState(){
+ const params=new URLSearchParams(window.location.search),selectedMonth=params.get("month"),type=params.get("type");
+ if(/^\\d{4}-\\d{2}$/.test(selectedMonth||""))$("monthFilter").value=selectedMonth;
+ $("typeFilter").value=type==="income"||type==="expense"?type:"";
+ const requested=window.location.hash.slice(1),page=titles[requested]?requested:"dashboard";
+ if(!window.location.hash){const url=new URL(window.location.href);url.hash=page;history.replaceState({page},"",url)}
+ go(page,false);
+}
 function init(){
  if($("monthFilter"))$("monthFilter").value=month();
  $("navigation").onclick=e=>{const b=e.target.closest("[data-page]");if(b)go(b.dataset.page)};
- document.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
- $("menuBtn").onclick=()=>$("app").querySelector(".sidebar").classList.toggle("open");
- $("monthFilter").onchange=render;
+ $("menuBtn").onclick=()=>{
+  const nav=$("app").querySelector(".sidebar"),isOpen=nav.classList.toggle("open");
+  $("menuBtn").setAttribute("aria-expanded",String(isOpen));
+ };
+ $("monthFilter").onchange=()=>{render();writeFilterState()};
  $("quickAddBtn").onclick=$("addTransactionBtn").onclick=()=>open("transaction");
  $("addCardBtn").onclick=()=>open("card");
  $("addInstallmentBtn").onclick=()=>open("installment");
  $("addBillBtn").onclick=()=>open("bill");
  $("addGoalBtn").onclick=()=>open("goal");
  $("transactionSearch").oninput=renderTransactions;
- $("typeFilter").onchange=renderTransactions;
+ $("typeFilter").onchange=()=>{renderTransactions();writeFilterState()};
  $("closeModalBtn").onclick=$("cancelModalBtn").onclick=close;
- $("modalBackdrop").onclick=e=>{if(e.target===$("modalBackdrop"))close()};
+ $("modalBackdrop").addEventListener("click",e=>{if(e.target===$("modalBackdrop"))close()});
+ $("modalBackdrop").addEventListener("close",()=>{edit=null;kind=null;msg("formMessage","")});
  $("editorForm").onsubmit=save;
- document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+ $("editorForm").addEventListener("input",e=>{
+  if(e.target.hasAttribute("aria-invalid")){
+   e.target.removeAttribute("aria-invalid");e.target.removeAttribute("aria-describedby");
+   if(!$("editorForm").querySelector("[aria-invalid]"))msg("formMessage","");
+  }
+ });
+ $("toastCloseBtn").onclick=dismissToast;
+ document.addEventListener("click",e=>{
+  const create=e.target.closest("[data-new]"),destination=e.target.closest("[data-goto]");
+  if(create){open(create.dataset.new);closeMenu();return}
+  if(destination){go(destination.dataset.goto);return}
+  if(e.target.closest("[data-reload]"))load();
+ });
+ window.addEventListener("popstate",restoreUrlState);
+ window.addEventListener("hashchange",()=>go(window.location.hash.slice(1),false));
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMenu()});
  $("exportBackupBtn").onclick=exportBackup;
  $("importBackupBtn").onclick=()=>$("backupFileInput").click();
  $("backupFileInput").onchange=restoreBackup;
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)load()});
+ restoreUrlState();
  enterLocalSpace();
 }
 async function enterLocalSpace(){
@@ -33,6 +96,7 @@ async function enterLocalSpace(){
  $("authScreen").classList.add("hidden");
  $("app").classList.remove("hidden");
  const todayLabel=$("todayLabel");if(todayLabel)todayLabel.textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+ showDashboardSkeletons();
  await load();
 }
 async function refreshSyncStatus(){
@@ -67,17 +131,31 @@ async function restoreBackup(event){
  }catch(error){toast(error.message||"Não foi possível restaurar este backup.",true)}
  finally{event.target.value=""}
 }
-function go(p){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$(p+"Page").classList.remove("hidden");document.querySelectorAll(".nav-item[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===p));$("pageTitle").textContent=titles[p];$("app").querySelector(".sidebar").classList.remove("open");render();scrollTo({top:0,behavior:"smooth"})}
+function go(p,writeHistory=true){
+ if(!titles[p])p="dashboard";
+ if(writeHistory&&window.location.hash!=="#"+p){
+  const url=new URL(window.location.href);url.hash=p;history.pushState({page:p},"",url);
+ }
+ document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));
+ $(p+"Page").classList.remove("hidden");
+ document.querySelectorAll(".nav-item[data-page]").forEach(b=>{
+  const active=b.dataset.page===p;b.classList.toggle("active",active);
+  if(active)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");
+ });
+ $("pageTitle").textContent=titles[p];closeMenu();render();scrollTo({top:0,behavior:"auto"});
+}
 async function load(){
  if(!user||!window.FinanceOffline)return;
+ $("content").setAttribute("aria-busy","true");
  try{
   rows=await FinanceOffline.getRows(user.id);
-  render();
-  await refreshSyncStatus();
+  render();await refreshSyncStatus();
  }catch(error){
   console.error("Falha ao abrir dados locais:",error);
-  toast(error.message||"Não foi possível abrir os dados salvos neste aparelho.",true);
- }
+  const message=error.message||"Tente recarregar a página para abrir os dados deste aparelho.";
+  ["categoryChart","upcomingBills","recentTransactions"].forEach(id=>loadErrorState(id,message));
+  toast(message,true);
+ }finally{$("content").setAttribute("aria-busy","false")}
 }
 function monthly(){let m=$("monthFilter").value||month();return rows.transactions.filter(t=>(t.date||"").startsWith(m))}function sum(a){return a.reduce((s,x)=>s+Number(x.amount||0),0)}function group(a){let g={};a.forEach(x=>g[x.category||"Outros"]=(g[x.category||"Outros"]||0)+Number(x.amount));return Object.entries(g).sort((a,b)=>b[1]-a[1])}
 function bars(g,limit=99){let max=g[0]?.[1]||1;return g.length?g.slice(0,limit).map(([n,v])=>'<div class="category-line"><span class="cat-name">'+esc(n)+'</span><div class="bar-track"><div class="bar-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+fmt(v)+'</strong></div>').join(""):'<div class="empty-state">Seus gastos aparecerão aqui quando você registrar lançamentos.</div>'}
