@@ -88,19 +88,8 @@ function dashboard(){let a=monthly(),inc=sum(a.filter(x=>x.type==="income")),exp
 function txTable(a,actions=true){if(!a.length)return '<div class="empty-state">Nenhum lançamento encontrado.</div>';return '<div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Valor</th>'+(actions?"<th>Ações</th>":"")+'</tr></thead><tbody>'+a.map(t=>'<tr><td><strong>'+esc(t.description)+'</strong></td><td><span class="tag">'+esc(t.category||"Outros")+'</span></td><td>'+df(t.date)+'</td><td class="'+(t.type==="income"?"amount-income":"amount-expense")+'">'+(t.type==="income"?"+":"−")+' '+fmt(t.amount)+'</td>'+(actions?'<td><button class="mini-btn" data-edit="transaction" data-id="'+t.id+'">Editar</button> <button class="mini-btn danger" data-del="transaction" data-id="'+t.id+'">Excluir</button></td>':"")+'</tr>').join("")+'</tbody></table></div>'}
 function renderTransactions(){let q=($("transactionSearch").value||"").toLowerCase(),t=$("typeFilter").value,a=[...rows.transactions].filter(x=>(!q||(x.description+" "+x.category).toLowerCase().includes(q))&&(!t||x.type===t)).sort((a,b)=>b.date.localeCompare(a.date));$("transactionsTable").innerHTML=txTable(a);actions($("transactionsTable"))}
 function bankIdentity(bank){
- let n=String(bank||"").trim().toLowerCase();
- if(n.includes("nubank")||n==="nu")return{short:"nu",bg:"#820ad1",fg:"#ffffff"};
- if(n.includes("banco do brasil")||n==="bb")return{short:"BB",bg:"#f5c400",fg:"#153c70"};
- if(n.includes("itaú")||n.includes("itau"))return{short:"itaú",bg:"#ec7000",fg:"#ffffff"};
- if(n.includes("bradesco"))return{short:"bra",bg:"#cc092f",fg:"#ffffff"};
- if(n.includes("santander"))return{short:"san",bg:"#ec0000",fg:"#ffffff"};
- if(n.includes("caixa"))return{short:"cx",bg:"#005ca9",fg:"#ffffff"};
- if(n.includes("inter"))return{short:"inter",bg:"#ff7a00",fg:"#ffffff"};
- if(n.includes("c6"))return{short:"C6",bg:"#202020",fg:"#ffffff"};
- if(n.includes("picpay"))return{short:"pic",bg:"#21c25e",fg:"#123d25"};
- if(n.includes("mercado pago"))return{short:"MP",bg:"#009ee3",fg:"#ffffff"};
- let words=String(bank||"Banco").trim().split(/\s+/).filter(Boolean);
- return{short:words.slice(0,2).map(w=>w[0]).join("").toUpperCase()||"CC",bg:"#e0f3e8",fg:"#21664f"};
+ const words=String(bank||"Banco").trim().split(/\s+/).filter(Boolean);
+ return {short:words.slice(0,2).map(word=>word[0]).join("").toUpperCase()||"CC",bg:"var(--color-accent-wash)",fg:"var(--color-accent)"};
 }
 function renderCards(){
  $("cardsList").innerHTML=rows.cards.length?rows.cards.map(c=>{
