@@ -4,7 +4,7 @@ const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   BASE_URL.href,
   new URL("index.html", BASE_URL).href,
-  new URL("style.css?v=20261117-3", BASE_URL).href,
+  new URL("style.css?v=20261117-4", BASE_URL).href,
   new URL("app.js?v=20261117-3", BASE_URL).href,
   new URL("pwa.js?v=20261117-2", BASE_URL).href,
   new URL("offline-store.js?v=20261117-2", BASE_URL).href,
