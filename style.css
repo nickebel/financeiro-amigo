@@ -673,8 +673,8 @@ footer {
     top: 0;
     right: 0;
     left: 0;
-    min-height: 62px;
-    height: 62px;
+    min-height: 64px;
+    height: 64px;
     justify-content: space-between;
     padding-block: var(--space-2);
   }
@@ -712,7 +712,7 @@ footer {
   .main {
     width: calc(100% - 32px);
     min-height: 100svh;
-    margin-top: calc(62px + var(--space-4));
+    margin-top: 80px;
   }
   .topbar {
     align-items: center;
@@ -898,7 +898,7 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
 }
 .toast-close:hover { background: var(--color-paper-2); }
 @media (max-width: 40rem) {
-  .main { margin-top: calc(62px + var(--space-4)); }
+  .main { margin-top: 80px; }
   .summary-card small, .filter-row, .panel-heading p { font-size: 13px; }
   .summary-card.balance-card strong { font-size: 28px; }
   .empty-state { padding-block: var(--space-4); }
@@ -932,8 +932,8 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
     top: 0;
     right: 0;
     left: 0;
-    min-height: 62px;
-    height: 62px;
+    min-height: 64px;
+    height: 64px;
     justify-content: space-between;
     padding-block: var(--space-2);
   }
@@ -970,11 +970,11 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
     content: "";
     position: fixed;
     z-index: 19;
-    inset: 62px 0 0;
+    inset: 64px 0 0;
     background: var(--color-overlay);
   }
   .mobile-menu { display: inline-grid; flex: 0 0 44px; }
-  .main { margin-top: calc(62px + var(--space-4)); }
+  .main { margin-top: 80px; }
   #navigation { gap: var(--space-1); }
   .nav-item { padding-inline: var(--space-2); font-size: 12px; }
   .nav-item > span { display: none; }
