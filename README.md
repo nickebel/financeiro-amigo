@@ -11,7 +11,8 @@ Um app financeiro pessoal, azul, sem login e sem cadastro. Abre diretamente no p
 - Metas de economia e contribuições.
 - Gráficos por categoria e relatórios.
 - Exportação e restauração de backup em JSON.
-- Instalação como PWA e abertura offline depois da primeira visita.\n- Navegação por URL: páginas, período e tipo de lançamento podem ser compartilhados; a busca digitada não é incluída.
+- Instalação como PWA e abertura offline depois da primeira visita.
+- Navegação por URL: páginas, período e tipo de lançamento podem ser compartilhados; a busca digitada não é incluída.
 
 ## Como os dados são guardados
 
