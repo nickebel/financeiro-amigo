@@ -33,11 +33,11 @@ No máximo duas famílias, sem dependências externas:
 
 ## Composição
 
-- Fundo imersivo azul-petróleo em camadas, com formas fluidas inspiradas em ondas e dunas abstratas.
+- Fundo imersivo azul-petróleo em camadas, com uma ilustração SVG original de ondas e dunas abstratas incluída no cache offline.
 - Navegação em vidro fosco discreto, com contraste e estado atual claros.
 - O saldo é o foco: painel amplo e escuro, com reflexos azul-claro suaves e formas curvas abstratas.
 - Entradas e despesas permanecem subordinadas, separadas por linhas e espaços.
-- Painéis translúcidos são usados apenas para agrupar conteúdo real; blur, bordas e reflexos são discretos.
+- Painéis usam superfícies azul-petróleo sólidas com bordas suaves; a atmosfera vem da arte de fundo, não de blur atrás de texto, preservando contraste.
 - Tabelas ficam abertas e legíveis, com linhas de separação e colunas sticky de fundo sólido o suficiente.
 - No celular, o saldo aparece primeiro, os indicadores se empilham e os painéis mantêm contraste e toque acessível.
 - Não reproduzir conteúdo de marketing, hero turístico, CTA de venda, chat flutuante ou rodapé de template.
