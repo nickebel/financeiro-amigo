@@ -14,8 +14,10 @@ jobs:
   floor:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Financeiro Amigo
+      - name: Checkout Financeiro Amigo with history
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Checkout Hallmark v2.0.0
         uses: actions/checkout@v4
         with:
@@ -30,5 +32,33 @@ jobs:
           node --check sw.js
       - name: Install browser audit dependency
         run: npm install --no-save --package-lock=false puppeteer-core
-      - name: Run Hallmark app-screen audit
-        run: node .tools/hallmark/skills/hallmark/scripts/sloplint.mjs . --scope app --genre modern-minimal --render
+      - name: Record the original app screen
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="$(git rev-parse HEAD^1)"
+          fi
+          BASELINE_DIR="$RUNNER_TEMP/hallmark-before"
+          mkdir -p "$BASELINE_DIR/.tools"
+          git archive "$BASE_SHA" | tar -x -C "$BASELINE_DIR"
+          cp -R .tools/hallmark "$BASELINE_DIR/.tools/hallmark"
+          (
+            cd "$BASELINE_DIR"
+            node .tools/hallmark/skills/hallmark/scripts/sloplint.mjs . --scope app --genre modern-minimal --render --before || true
+            test -f .hallmark/before.json
+          )
+          mkdir -p .hallmark
+          cp -R "$BASELINE_DIR/.hallmark/." .hallmark/
+      - name: Audit the redesign and preserve existing wiring
+        run: node .tools/hallmark/skills/hallmark/scripts/sloplint.mjs . --scope app --genre modern-minimal --render --kept
+      - name: Upload Hallmark comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hallmark-before-after
+          path: |
+            .hallmark/before.txt
+            .hallmark/before.json
+            .hallmark/compare.html
+          if-no-files-found: warn
