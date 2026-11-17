@@ -7,7 +7,7 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["react"],
+    "types": ["react", "vite/client"],
     "paths": {
       "@/*": ["./*"]
     }
