@@ -12,5 +12,5 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["components/ui/**/*.tsx"]
+  "include": ["components/ui/**/*.tsx", "components/ui/**/*.d.ts"]
 }
