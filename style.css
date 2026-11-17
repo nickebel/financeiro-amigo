@@ -1902,7 +1902,7 @@ a, button { text-align: left; }
 .dashboard-grid {
   grid-template-columns: minmax(0, 1.28fr) minmax(280px, .72fr);
   align-items: start;
-  column-gap: clamp(20px, 2.4vw, 32px);
+  column-gap: var(--space-5);
 }
 .dashboard-grid .panel { height: 100%; }
 .panel-heading { align-items: flex-start; }
