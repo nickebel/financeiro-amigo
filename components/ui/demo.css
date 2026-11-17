@@ -1,4 +1,5 @@
-.ray-portal-demo {
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Ray portal demo · scope: component · v2.0.0 */
+:root {
   --ray-portal-paper: #FAFAFA;
   --ray-portal-ink: #111111;
   --ray-portal-field: #003459;
@@ -9,9 +10,10 @@
   --ray-portal-action-ink: #061A2D;
   --ray-portal-focus: #8CC8FF;
   --ray-portal-action-active: #378DDA;
-  min-height: 100vh;
-  background: var(--ray-portal-paper);
-  color: var(--ray-portal-ink);
+  --ray-portal-meta: #707070;
+  --ray-portal-body: Arial, sans-serif;
+  --ray-portal-display: Georgia, serif;
+  --ray-portal-space-4: 16px;
 }
 
 .ray-portal-demo .ray-portal-image {
@@ -45,7 +47,7 @@
   justify-content: space-between;
   gap: 24px;
   color: var(--ray-portal-foreground);
-  font-family: Arial, sans-serif;
+  font-family: var(--ray-portal-body);
   pointer-events: none;
 }
 
@@ -71,22 +73,22 @@
   align-items: end;
   gap: clamp(32px, 7vw, 112px);
   color: var(--ray-portal-foreground);
-  font-family: Arial, sans-serif;
+  font-family: var(--ray-portal-body);
 }
 
 .ray-portal-demo .ray-portal-eyebrow {
   margin: 0 0 20px;
   color: var(--ray-portal-muted);
-  font-size: 11px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .ray-portal-demo .ray-portal-content h2 {
   max-width: 11ch;
   margin: 0;
   color: var(--ray-portal-foreground);
-  font-family: Georgia, serif;
+  font-family: var(--ray-portal-display);
   font-size: clamp(42px, 7vw, 88px);
   font-weight: 400;
   line-height: .98;
@@ -107,7 +109,7 @@
   min-height: 46px;
   align-items: center;
   gap: 16px;
-  padding: 0 18px;
+  padding: 0 var(--ray-portal-space-4);
   background: var(--ray-portal-action);
   color: var(--ray-portal-action-ink);
   font-size: 13px;
@@ -139,7 +141,7 @@
   margin: 0;
   padding: 12px 20px;
   background: var(--ray-portal-paper);
-  color: #707070;
+  color: var(--ray-portal-meta);
   font-size: 11px;
 }
 
