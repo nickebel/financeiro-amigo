@@ -803,6 +803,9 @@ input, textarea, select {
 .table-panel > .table-region { padding-top: var(--space-2); }
 .table-wrap { max-width: 100%; overscroll-behavior-inline: contain; }
 table[data-actions="true"] { min-width: 680px; }
+table[data-actions="false"] { min-width: 520px; }
+table[data-actions="false"] th:first-child,
+table[data-actions="false"] td:first-child { position: sticky; z-index: 1; left: 0; min-width: 150px; background: var(--color-white); }
 table[data-actions="true"] th:first-child,
 table[data-actions="true"] td:first-child {
   position: sticky;
@@ -903,6 +906,8 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
   table[data-actions="true"] td:first-child { min-width: 132px; }
   table[data-actions="true"] th:last-child,
   table[data-actions="true"] td:last-child { min-width: 150px; }
+  table[data-actions="false"] th:first-child,
+  table[data-actions="false"] td:first-child { min-width: 132px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .skeleton { animation: none; }
@@ -982,3 +987,6 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
 @media (prefers-reduced-motion: reduce) {
   #editorForm[aria-busy="true"] .btn[type="submit"]::after { animation: none; }
 }
+
+.table-panel input, .table-panel select { min-height: 40px; }
+@media (max-width: 40rem) { .table-panel input, .table-panel select { min-height: 44px; } }
