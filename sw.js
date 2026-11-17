@@ -5,7 +5,7 @@ const SHELL_URLS = [
   BASE_URL.href,
   new URL("index.html", BASE_URL).href,
   new URL("style.css?v=20261117-16", BASE_URL).href,
-  new URL("app.js?v=20261117-3", BASE_URL).href,
+  new URL("app.js?v=20261117-10", BASE_URL).href,
   new URL("pwa.js?v=20261117-3", BASE_URL).href,
   new URL("offline-store.js?v=20261117-2", BASE_URL).href,
   new URL("manifest.webmanifest", BASE_URL).href,
@@ -31,7 +31,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("financeiro-amigo-shell-") && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => (key.startsWith("financeiro-amigo-shell-") || key.startsWith("ray-shell-")) && key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
