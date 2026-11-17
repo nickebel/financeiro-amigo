@@ -1011,3 +1011,9 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
   }
   .backup-btn::before, .install-app-btn::before { font-size: 18px; }
 }
+
+@media (max-width: 40rem) {
+  .topbar { gap: var(--space-2); }
+  .topbar-heading h2 { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #installAppBtn::before { content: "+"; font-family: var(--font-body); font-weight: 700; }
+}
