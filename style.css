@@ -270,6 +270,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 .summary-card.balance-card {
   border-color: var(--color-rule);
   background: var(--color-surface-panel);
+  color: var(--color-ink);
 }
 .summary-top {
   display: flex;
