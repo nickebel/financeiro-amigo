@@ -1,336 +1,239 @@
-/* Armazenamento local e fila de sincronização. Os dados financeiros ficam em IndexedDB
-   por usuário; somente operações pendentes são enviadas ao Supabase autenticado. */
+/* Hallmark · local-first finance storage · IndexedDB only · no authentication or remote API */
 (() => {
   "use strict";
+
   const DB_NAME = "financeiro-amigo-offline";
   const DB_VERSION = 1;
-  const STORE = "profiles";
+  const STORE_NAME = "profiles";
+  const APP_ID = "financeiro-amigo";
   const TABLES = ["transactions", "cards", "installments", "bills", "goals"];
   const locks = new Map();
   let dbPromise;
 
-  const emptyRows = () => ({ transactions: [], cards: [], installments: [], bills: [], goals: [] });
-  const deepClone = value => value == null ? value : JSON.parse(JSON.stringify(value));
-  const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
+  const emptyRows = () => ({
+    transactions: [],
+    cards: [],
+    installments: [],
+    bills: [],
+    goals: []
+  });
+
   const now = () => new Date().toISOString();
+  const makeId = () => globalThis.crypto?.randomUUID?.()
+    || "local-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
 
-  function uuid() {
-    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === "x" ? r : (r & 3 | 8)).toString(16);
-    });
-  }
-
-  function emit(userId, state, extra = {}) {
-    try {
-      window.dispatchEvent(new CustomEvent("finance-sync-state", {
-        detail: {
-          userId,
-          online: online(),
-          pendingCount: state && Array.isArray(state.queue) ? state.queue.length : 0,
-          lastError: state && state.lastError ? state.lastError : null,
-          ...extra
-        }
-      }));
-    } catch (_) {}
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
   }
 
   function openDb() {
     if (dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
       if (!("indexedDB" in window)) {
-        reject(new Error("Este dispositivo não oferece armazenamento offline compatível."));
+        reject(new Error("Este navegador não oferece armazenamento local. Abra no Chrome, Edge ou Safari atualizado."));
         return;
       }
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = () => {
         const db = request.result;
-        if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "userId" });
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: "userId" });
+        }
       };
-      request.onsuccess = () => {
-        const db = request.result;
-        db.onversionchange = () => db.close();
-        resolve(db);
-      };
-      request.onerror = () => reject(request.error || new Error("Não foi possível abrir o armazenamento local."));
-      request.onblocked = () => reject(new Error("Feche outras abas antigas do Meu Financeiro e tente novamente."));
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("Não foi possível abrir o armazenamento deste aparelho."));
+      request.onblocked = () => reject(new Error("Feche outras abas do Financeiro Amigo e tente novamente."));
     });
     return dbPromise;
   }
 
-  async function readState(userId) {
-    if (!userId) throw new Error("Não foi possível identificar a conta para abrir os dados locais.");
+  async function readState(profileId) {
+    if (!profileId) throw new Error("Não foi possível identificar o perfil local.");
     const db = await openDb();
-    const value = await new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readonly");
-      const request = tx.objectStore(STORE).get(userId);
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error || new Error("Não foi possível ler os dados locais."));
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const request = tx.objectStore(STORE_NAME).get(profileId);
+      request.onsuccess = () => {
+        const value = request.result || null;
+        const state = value || {
+          userId: profileId,
+          rows: emptyRows(),
+          updatedAt: now()
+        };
+        state.rows = state.rows || emptyRows();
+        for (const table of TABLES) {
+          if (!Array.isArray(state.rows[table])) state.rows[table] = [];
+        }
+        resolve(state);
+      };
+      request.onerror = () => reject(request.error || new Error("Não foi possível ler os dados salvos."));
     });
-    if (value) {
-      value.rows = value.rows || emptyRows();
-      for (const table of TABLES) if (!Array.isArray(value.rows[table])) value.rows[table] = [];
-      value.queue = Array.isArray(value.queue) ? value.queue : [];
-      return value;
-    }
-    return { userId, rows: emptyRows(), queue: [], updatedAt: now(), lastError: null, lastSyncAt: null };
   }
 
   async function writeState(state) {
     const db = await openDb();
-    await new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readwrite");
-      tx.objectStore(STORE).put(state);
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).put(state);
       tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error || new Error("Não foi possível salvar no dispositivo."));
+      tx.onerror = () => reject(tx.error || new Error("Não foi possível salvar neste aparelho."));
       tx.onabort = () => reject(tx.error || new Error("O salvamento local foi interrompido."));
     });
-    emit(state.userId, state);
   }
 
-  function serialize(userId, task) {
-    const prior = locks.get(userId) || Promise.resolve();
-    const next = prior.catch(() => {}).then(task);
+  function serialize(profileId, task) {
+    const previous = locks.get(profileId) || Promise.resolve();
+    const next = previous.catch(() => {}).then(task);
     const tracked = next.finally(() => {
-      if (locks.get(userId) === tracked) locks.delete(userId);
+      if (locks.get(profileId) === tracked) locks.delete(profileId);
     });
-    locks.set(userId, tracked);
+    locks.set(profileId, tracked);
     return tracked;
   }
 
-  function rowKey(table, id) { return table + ":" + id; }
-
-  function rememberedUser() {
-    try {
-      const value = JSON.parse(localStorage.getItem("mf-offline-user-v1") || "null");
-      return value && value.id ? value : null;
-    } catch (_) { return null; }
-  }
-  function rememberUser(user) {
-    if (!user || !user.id) return;
-    try { localStorage.setItem("mf-offline-user-v1", JSON.stringify({ id: user.id, email: user.email || "" })); } catch (_) {}
-  }
-  function clearRememberedUser() {
-    try { localStorage.removeItem("mf-offline-user-v1"); } catch (_) {}
+  async function getRows(profileId) {
+    const state = await readState(profileId);
+    return clone(state.rows);
   }
 
-  async function getRows(userId) {
-    const state = await readState(userId);
-    return deepClone(state.rows);
+  async function getStatus() {
+    return {
+      online: navigator.onLine,
+      pendingCount: 0,
+      lastError: null,
+      localOnly: true
+    };
   }
 
-  async function getStatus(userId) {
-    try {
-      const state = await readState(userId);
-      return {
-        online: online(),
-        pendingCount: state.queue.length,
-        lastError: state.lastError || null,
-        lastSyncAt: state.lastSyncAt || null
-      };
-    } catch (error) {
-      return { online: online(), pendingCount: 0, lastError: error.message || "Armazenamento local indisponível.", lastSyncAt: null };
-    }
+  async function load(profileId) {
+    const rows = await getRows(profileId);
+    return { rows, pendingCount: 0, synced: 0, localOnly: true, error: null };
   }
 
-  async function enqueueUpsert(userId, table, row, isCreate) {
+  async function save(profileId, _client, table, row) {
     if (!TABLES.includes(table)) throw new Error("Tipo de registro não suportado.");
-    return serialize(userId, async () => {
-      const state = await readState(userId);
+    if (!row || typeof row !== "object" || Array.isArray(row)) {
+      throw new Error("Confira os dados e tente salvar novamente.");
+    }
+
+    return serialize(profileId, async () => {
+      const state = await readState(profileId);
       const index = state.rows[table].findIndex(item => item.id === row.id);
-      const oldRow = index >= 0 ? state.rows[table][index] : null;
-      const safeRow = {
-        ...(oldRow || {}),
-        ...deepClone(row),
-        id: row.id || uuid(),
-        user_id: userId,
-        created_at: row.created_at || (oldRow && oldRow.created_at) || now(),
+      const previous = index >= 0 ? state.rows[table][index] : null;
+
+      if (table === "installments" && !state.rows.cards.some(card => card.id === row.card_id)) {
+        throw new Error("Cadastre o cartão antes de adicionar uma compra parcelada.");
+      }
+
+      const stored = {
+        ...(previous || {}),
+        ...clone(row),
+        id: row.id || makeId(),
+        user_id: profileId,
+        created_at: row.created_at || previous?.created_at || now(),
         updated_at: now()
       };
-      const previous = state.queue.find(op => op.table === table && op.rowId === safeRow.id);
-      state.queue = state.queue.filter(op => !(op.table === table && op.rowId === safeRow.id));
-      state.queue.push({
-        opId: uuid(),
-        table,
-        rowId: safeRow.id,
-        action: "upsert",
-        isCreate: previous ? previous.isCreate : Boolean(isCreate),
-        payload: safeRow,
-        createdAt: now()
-      });
-      if (index >= 0) state.rows[table][index] = safeRow;
-      else state.rows[table].push(safeRow);
+
+      if (index >= 0) state.rows[table][index] = stored;
+      else state.rows[table].push(stored);
+
       state.updatedAt = now();
-      state.lastError = null;
       await writeState(state);
-      return safeRow;
+      return { row: clone(stored), savedLocally: true };
     });
   }
 
-  async function enqueueDelete(userId, table, rowId) {
+  async function remove(profileId, _client, table, rowId) {
     if (!TABLES.includes(table)) throw new Error("Tipo de registro não suportado.");
-    return serialize(userId, async () => {
-      const state = await readState(userId);
-      const prior = state.queue.find(op => op.table === table && op.rowId === rowId);
-      state.queue = state.queue.filter(op => !(op.table === table && op.rowId === rowId));
-      if (!prior || !prior.isCreate) {
-        state.queue.push({ opId: uuid(), table, rowId, action: "delete", isCreate: false, payload: null, createdAt: now() });
-      }
+    return serialize(profileId, async () => {
+      const state = await readState(profileId);
       state.rows[table] = state.rows[table].filter(row => row.id !== rowId);
 
-      // Deleting a card cascades to installments in Postgres. Mirror this locally and
-      // remove queued child upserts, otherwise an offline-created installment could
-      // later be sent for a card that no longer exists.
       if (table === "cards") {
-        const childIds = new Set(state.rows.installments.filter(row => row.card_id === rowId).map(row => row.id));
         state.rows.installments = state.rows.installments.filter(row => row.card_id !== rowId);
-        state.queue = state.queue.filter(op => !(op.table === "installments" && (childIds.has(op.rowId) || (op.action === "upsert" && op.payload && op.payload.card_id === rowId))));
       }
+
       state.updatedAt = now();
-      state.lastError = null;
       await writeState(state);
-      return { removed: true };
+      return { removed: true, savedLocally: true };
     });
   }
 
-  function serverPayload(payload) {
-    const row = { ...payload };
-    delete row.__pending;
-    delete row.localOnly;
-    return row;
-  }
-
-  async function flushQueue(userId, client) {
-    return serialize(userId, async () => {
-      const state = await readState(userId);
-      if (!online()) {
-        emit(userId, state, { mode: "offline" });
-        return { synced: 0, pendingCount: state.queue.length, offline: true, error: null };
-      }
-      if (!client) return { synced: 0, pendingCount: state.queue.length, offline: false, error: "Entre na sua conta quando houver internet para sincronizar." };
-      let synced = 0;
-      for (const op of [...state.queue]) {
-        let result;
-        try {
-          if (op.action === "delete") {
-            result = await client.from(op.table).delete().eq("id", op.rowId);
-          } else {
-            result = await client.from(op.table).upsert(serverPayload(op.payload), { onConflict: "id" });
-          }
-        } catch (error) {
-          state.lastError = error.message || "Falha de conexão durante a sincronização.";
-          break;
-        }
-        if (result && result.error) {
-          state.lastError = result.error.message || "Não foi possível sincronizar.";
-          break;
-        }
-        state.queue = state.queue.filter(item => item.opId !== op.opId);
-        synced += 1;
-      }
-      state.lastSyncAt = synced ? now() : state.lastSyncAt;
-      if (state.queue.length === 0) state.lastError = null;
-      state.updatedAt = now();
-      await writeState(state);
-      return { synced, pendingCount: state.queue.length, offline: false, error: state.lastError };
-    });
-  }
-
-  async function pullRemote(userId, client) {
-    return serialize(userId, async () => {
-      if (!client || !online()) return { rows: (await readState(userId)).rows, pulled: 0, error: null };
-      const state = await readState(userId);
-      let pulled = 0;
-      for (const table of TABLES) {
-        let query;
-        try {
-          query = await client.from(table).select("*");
-        } catch (error) {
-          state.lastError = error.message || "Falha ao consultar a nuvem.";
-          continue;
-        }
-        if (query.error || !Array.isArray(query.data)) {
-          state.lastError = query.error ? query.error.message : "Resposta inesperada da nuvem.";
-          continue;
-        }
-        const pendingKeys = new Set(state.queue.filter(op => op.table === table).map(op => op.rowId));
-        const remote = query.data;
-        const remoteIds = new Set(remote.map(row => row.id));
-        let local = state.rows[table].filter(row => pendingKeys.has(row.id) || remoteIds.has(row.id));
-        const localById = new Map(local.map((row, index) => [row.id, index]));
-        for (const row of remote) {
-          if (pendingKeys.has(row.id)) continue;
-          const existing = localById.get(row.id);
-          if (existing === undefined) {
-            localById.set(row.id, local.length);
-            local.push(row);
-          } else local[existing] = row;
-          pulled += 1;
-        }
-        // Keep optimistic local records whose operations are still waiting to sync.
-        for (const op of state.queue.filter(op => op.table === table && op.action === "upsert")) {
-          if (!local.some(row => row.id === op.rowId)) local.push(op.payload);
-        }
-        state.rows[table] = local;
-      }
-      state.updatedAt = now();
-      await writeState(state);
-      return { rows: deepClone(state.rows), pulled, error: state.lastError || null };
-    });
-  }
-
-  async function load(userId, client, allowSync = true) {
-    let state = await readState(userId);
-    if (allowSync && online() && client) {
-      const flushed = await flushQueue(userId, client);
-      state = await readState(userId);
-      // A failed write stays queued; pullRemote won't overwrite any affected local record.
-      const pulled = await pullRemote(userId, client);
-      state = await readState(userId);
-      return { rows: deepClone(state.rows), pendingCount: state.queue.length, synced: flushed.synced, error: flushed.error || pulled.error || null };
-    }
-    return { rows: deepClone(state.rows), pendingCount: state.queue.length, synced: 0, error: null };
-  }
-
-  async function save(userId, client, table, row, isCreate, allowSync = true) {
-    const stored = await enqueueUpsert(userId, table, row, isCreate);
-    let result = { synced: 0, pendingCount: (await getStatus(userId)).pendingCount, offline: !online(), error: null };
-    if (allowSync && online() && client) {
-      // The local write is already durable; sync in the background so the interface is responsive.
-      flushQueue(userId, client).then(r => emit(userId, null, r)).catch(error => emit(userId, null, { error: error.message }));
-    }
-    return { row: stored, ...result };
-  }
-
-  async function remove(userId, client, table, rowId, allowSync = true) {
-    await enqueueDelete(userId, table, rowId);
-    const status = await getStatus(userId);
-    if (allowSync && online() && client) {
-      flushQueue(userId, client).then(r => emit(userId, null, r)).catch(error => emit(userId, null, { error: error.message }));
-    }
-    return { ...status, removed: true };
-  }
-
-  async function update(userId, client, table, rowId, patch, allowSync = true) {
-    const state = await readState(userId);
+  async function update(profileId, client, table, rowId, patch) {
+    const state = await readState(profileId);
     const current = (state.rows[table] || []).find(row => row.id === rowId);
-    if (!current) throw new Error("Não encontrei esse registro salvo neste dispositivo.");
-    return save(userId, client, table, { ...current, ...patch, id: rowId, user_id: userId }, false, allowSync);
+    if (!current) throw new Error("Não encontrei esse registro salvo neste aparelho.");
+    return save(profileId, client, table, { ...current, ...patch, id: rowId }, false);
   }
 
-  async function sync(userId, client) {
-    const flushed = await flushQueue(userId, client);
-    if (!flushed.offline && client && online()) {
-      const pulled = await pullRemote(userId, client);
-      const state = await readState(userId);
-      return { ...flushed, pulled: pulled.pulled || 0, rows: deepClone(state.rows), error: flushed.error || pulled.error || null };
+  function validateBackupRows(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      throw new Error("O arquivo não contém uma estrutura de backup válida.");
     }
-    const state = await readState(userId);
-    return { ...flushed, rows: deepClone(state.rows) };
+
+    const result = emptyRows();
+    for (const table of TABLES) {
+      const source = value[table];
+      if (!Array.isArray(source)) throw new Error("O backup está incompleto: falta a lista de " + table + ".");
+      if (source.length > 10000) throw new Error("O backup contém registros demais para ser restaurado.");
+      const ids = new Set();
+
+      result[table] = source.map((row, index) => {
+        if (!row || typeof row !== "object" || Array.isArray(row) || typeof row.id !== "string" || !row.id.trim()) {
+          throw new Error("Há um registro inválido em " + table + " (item " + (index + 1) + ").");
+        }
+        if (ids.has(row.id)) throw new Error("Há identificadores repetidos em " + table + ".");
+        ids.add(row.id);
+        return { ...clone(row), user_id: "financeiro-amigo-local-profile" };
+      });
+    }
+
+    const cardIds = new Set(result.cards.map(card => card.id));
+    if (result.installments.some(item => !cardIds.has(item.card_id))) {
+      throw new Error("O backup contém uma compra parcelada sem o cartão correspondente.");
+    }
+
+    return result;
   }
 
-  window.FinanceOffline = {
+  async function exportBackup(profileId) {
+    const rows = await getRows(profileId);
+    return JSON.stringify({
+      app: APP_ID,
+      version: 1,
+      exportedAt: now(),
+      rows
+    }, null, 2);
+  }
+
+  async function restoreBackup(profileId, rawText) {
+    if (typeof rawText !== "string" || rawText.length > 5 * 1024 * 1024) {
+      throw new Error("O arquivo é maior que o limite de 5 MB.");
+    }
+
+    let payload;
+    try {
+      payload = JSON.parse(rawText);
+    } catch (_) {
+      throw new Error("Este arquivo não é um JSON válido.");
+    }
+
+    if (payload?.app !== APP_ID || payload?.version !== 1) {
+      throw new Error("Este backup não pertence a uma versão compatível do Financeiro Amigo.");
+    }
+
+    const rows = validateBackupRows(payload.rows);
+    return serialize(profileId, async () => {
+      const state = { userId: profileId, rows, updatedAt: now() };
+      await writeState(state);
+      return {
+        restored: true,
+        counts: Object.fromEntries(TABLES.map(table => [table, rows[table].length]))
+      };
+    });
+  }
+
+  window.FinanceOffline = Object.freeze({
     tables: TABLES,
     getRows,
     getStatus,
@@ -338,10 +241,8 @@
     save,
     remove,
     update,
-    sync,
-    rememberUser,
-    rememberedUser,
-    clearRememberedUser,
-    online
-  };
+    exportBackup,
+    restoreBackup,
+    online: () => navigator.onLine
+  });
 })();
