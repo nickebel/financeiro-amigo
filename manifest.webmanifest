@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Meu Financeiro",
-  "short_name": "Financeiro",
-  "description": "Controle financeiro pessoal com dados locais e backup manual.",
+  "name": "Ray",
+  "short_name": "Ray",
+  "description": "Ray: organize entradas, despesas, cartões, contas e metas com dados guardados neste aparelho.",
   "lang": "pt-BR",
   "start_url": "./?source=pwa",
   "scope": "./",
