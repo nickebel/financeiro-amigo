@@ -45,7 +45,6 @@ export default function RayGlyphPortalDemo() {
       >
         <section className="ray-portal-content">
           <div>
-            <p className="ray-portal-eyebrow">Organização sem ruído</p>
             <h2>Seu dinheiro, em perspectiva.</h2>
           </div>
           <div className="ray-portal-description">
