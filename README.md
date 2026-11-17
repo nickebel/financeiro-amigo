@@ -26,7 +26,7 @@ A proteção dos dados não depende de esconder os botões: as tabelas usam RLS 
 3. Em Authentication → Users, crie a conta do seu amigo e confirme o e-mail.
 4. Em Authentication → Settings, desative a opção que permite novos cadastros (Sign-ups).
 5. Em Project Settings → API, copie a Project URL e a chave pública publishable/anon.
-6. Faça uma cópia de `config.example.js` com o nome `config.js` e preencha esses dois valores.
+6. Faça uma cópia de `config.example.js` com o nome `config.js` e preencha esses dois valores. Esse arquivo precisa estar incluído no deploy; como ele está no `.gitignore`, ao usar Git local será necessário adicioná-lo explicitamente (`git add -f config.js`).
 7. Em Authentication → URL Configuration, configure a URL final do site como Site URL e como Redirect URL.
 
 **Nunca coloque a chave `service_role`, senha do banco ou qualquer segredo administrativo em arquivos do navegador.** A chave publishable/anon pode ser usada no frontend porque o acesso aos dados é limitado pelas políticas RLS.
