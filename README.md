@@ -34,7 +34,7 @@ O repositório já inclui um workflow em `.github/workflows/deploy-pages.yml` qu
 2. Faça um push na branch `main` ou execute manualmente o workflow **Deploy to GitHub Pages**.
 3. Depois da primeira execução bem-sucedida, o endereço do site aparece em **Settings → Pages**.
 
-**Atenção ao plano do GitHub:** no GitHub Free, o repositório precisa ser público para usar GitHub Pages. O projeto está atualmente privado. Para publicar mantendo o repositório privado, o plano precisa incluir Pages em repositórios privados; isso não torna o site privado. A publicação privada do site requer GitHub Enterprise Cloud para uma organização. Consulte a [documentação oficial do GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+Este repositório está público, então o GitHub Pages pode ser usado no plano Free. O site publicado também será público e acessível a quem tiver o endereço. Isso não expõe os lançamentos financeiros, que permanecem no armazenamento local do navegador. Consulte a [documentação oficial do GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
 
 Como não há login, o site publicado é acessível a quem tiver o endereço. Os dados não são enviados pelo site; permanecem no dispositivo. Não use este modo em aparelho compartilhado.
 
