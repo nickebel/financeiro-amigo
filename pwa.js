@@ -11,7 +11,7 @@
     event.preventDefault();
     deferredPrompt = event;
     installButton.hidden = false;
-    installButton.textContent = "Instalar Ray ↗";
+    installButton.textContent = "Instalar app ↗";
   });
 
   window.addEventListener("appinstalled", () => {
