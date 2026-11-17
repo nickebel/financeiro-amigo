@@ -1,4 +1,4 @@
-/* Meu Financeiro · app screen · Rich Blue × editorial paper */
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Rich Blue editorial · scope: app · v2.0.0 */
 /* Critique: records and balances lead; no marketing hero, decorative metric wall, stock imagery or empty ornament. */
 :root {
   --color-paper: #F8FCFD;
@@ -22,6 +22,7 @@
   --color-dot-grid: rgba(173, 235, 255, .2);
   --color-paper-grain: rgba(0, 52, 89, .035);
   --color-nav-divider: rgba(173, 235, 255, .2);
+  --color-privacy-divider: rgba(173, 235, 255, .22);
   --color-nav-text: rgba(255, 255, 255, .82);
   --color-nav-hover: rgba(173, 235, 255, .08);
   --color-nav-active-border: rgba(173, 235, 255, .28);
@@ -1083,7 +1084,7 @@ h3 { font-size: 19px; }
   color: var(--color-accent-wash);
 }
 .nav-item.active > span { color: var(--color-accent-wash); }
-.privacy-note { border-left-color: rgba(173, 235, 255, .22); }
+.privacy-note { border-left-color: var(--color-privacy-divider); }
 .privacy-note strong { color: var(--color-white); }
 .privacy-note small { color: var(--color-nav-muted); }
 
