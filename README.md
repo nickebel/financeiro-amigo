@@ -45,7 +45,7 @@ A interface segue o sistema editorial do Ray documentado em [DESIGN.md](DESIGN.m
 
 ## Componente React experimental
 
-O repositório também contém o componente reutilizável [Glyph Portal](components/ui/glyph-portal.tsx) e uma demonstração [RayGlyphPortalDemo](components/ui/demo.tsx). Eles estão em `components/ui`, o diretório convencional dos componentes visuais shadcn. O site financeiro publicado ainda não carrega TSX: consulte [GLYPH-PORTAL-SETUP.md](GLYPH-PORTAL-SETUP.md) para criar um ambiente Vite + React + TypeScript + Tailwind e executar a demonstração sem substituir o app financeiro atual.
+O repositório também contém o componente reutilizável [Glyph Portal](components/ui/glyph-portal.tsx) e uma demonstração [RayGlyphPortalDemo](components/ui/demo.tsx) e seus estilos [demo.css](components/ui/demo.css). Eles estão em `components/ui`, o diretório convencional dos componentes visuais shadcn. O site financeiro publicado ainda não carrega TSX: consulte [GLYPH-PORTAL-SETUP.md](GLYPH-PORTAL-SETUP.md) para criar um ambiente Vite + React + TypeScript + Tailwind e executar a demonstração sem substituir o app financeiro atual.
 
 ## Desenvolvimento
 
