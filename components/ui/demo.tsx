@@ -126,7 +126,7 @@ export default function RayGlyphPortalDemo() {
               Seus registros continuam guardados neste aparelho.
             </p>
             <a
-              href="../index.html#dashboard"
+              href="https://nickebel.github.io/financeiro-amigo/#dashboard"
               style={{
                 display: "inline-flex",
                 minHeight: 46,
