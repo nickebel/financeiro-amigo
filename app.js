@@ -37,13 +37,13 @@ function loadErrorState(id,message){
 }
 function writeFilterState(){
  const url=new URL(window.location.href),selectedMonth=$("monthFilter").value,type=$("typeFilter").value;
- if(/^\\d{4}-\\d{2}$/.test(selectedMonth))url.searchParams.set("month",selectedMonth);else url.searchParams.delete("month");
+ if(/^\d{4}-\d{2}$/.test(selectedMonth))url.searchParams.set("month",selectedMonth);else url.searchParams.delete("month");
  if(type==="income"||type==="expense")url.searchParams.set("type",type);else url.searchParams.delete("type");
  history.replaceState(history.state,"",url);
 }
 function restoreUrlState(){
  const params=new URLSearchParams(window.location.search),selectedMonth=params.get("month"),type=params.get("type");
- if(/^\\d{4}-\\d{2}$/.test(selectedMonth||""))$("monthFilter").value=selectedMonth;
+ if(/^\d{4}-\d{2}$/.test(selectedMonth||""))$("monthFilter").value=selectedMonth;
  $("typeFilter").value=type==="income"||type==="expense"?type:"";
  const requested=window.location.hash.slice(1),page=titles[requested]?requested:"dashboard";
  if(!window.location.hash){const url=new URL(window.location.href);url.hash=page;history.replaceState({page},"",url)}
