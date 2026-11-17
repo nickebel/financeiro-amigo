@@ -39,14 +39,14 @@ Copie os arquivos preparados para o diretório convencional do Vite:
 
 ```powershell
 New-Item -ItemType Directory -Force src/components/ui
-Copy-Item ../components/ui/glyph-portal.tsx, ../components/ui/demo.tsx src/components/ui/
+Copy-Item ../components/ui/glyph-portal.tsx, ../components/ui/demo.tsx, ../components/ui/demo.css, ../components/ui/assets.d.ts src/components/ui/
 ```
 
 **macOS/Linux:**
 
 ```bash
 mkdir -p src/components/ui
-cp ../components/ui/glyph-portal.tsx ../components/ui/demo.tsx src/components/ui/
+cp ../components/ui/glyph-portal.tsx ../components/ui/demo.tsx ../components/ui/demo.css ../components/ui/assets.d.ts src/components/ui/
 ```
 
 ### Tailwind CSS
