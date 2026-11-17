@@ -60,3 +60,4 @@ jobs:
           path: |
             .hallmark/
           if-no-files-found: warn
+          include-hidden-files: true
