@@ -7,8 +7,8 @@
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F8FCFD",
-  "theme_color": "#00171F",
+  "background_color": "#0B2932",
+  "theme_color": "#0B2932",
   "orientation": "any",
   "categories": [
     "finance",
