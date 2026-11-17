@@ -72,6 +72,7 @@
   --space-8: 40px;
   --space-9: 48px;
   --space-10: 64px;
+  --space-11: 80px;
   --space-section: clamp(96px, 9vw, 128px);
   --gutter: clamp(20px, 4vw, 48px);
   --container: 1180px;
@@ -751,7 +752,7 @@ footer {
   .main {
     width: calc(100% - 32px);
     min-height: 100svh;
-    margin-top: 80px;
+    margin-top: var(--space-11);
   }
   .topbar {
     align-items: center;
