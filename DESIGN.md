@@ -16,7 +16,7 @@ Redesign preserva os seis destinos, todos os formulários, IDs, handlers, opera�
 
 ## Hierarquia das telas
 
-- Visão geral: saldo do período em primeiro plano; entradas e despesas como apoio; despesas por categoria, vencimentos e tabela de lançamentos recentes.
+- Visão geral: saldo do período em primeiro plano; entradas e despesas como apoio; despesas por categoria, vencimentos e tabela de lançamentos recentes. O cartão de saldo pode receber uma grade pontilhada sutil somente no lado direito, sem competir com o valor.
 - Lançamentos, contas e parcelas: tabelas primeiro, sem cartões externos ao redor das tabelas.
 - Cartões e metas: cartões somente porque cada item representa um objeto real, não um registro tabular.
 - Relatórios: resumo sem indicadores inventados e detalhamento por categoria.
@@ -34,9 +34,10 @@ Todos os valores de cor devem ser declarados em `:root` e reutilizados como toke
 - Azul de ação e seleção: `--color-accent`, `--color-accent-deep`, `--color-accent-wash`, `--color-accent-ink`.
 - Semântica: `--color-positive`, `--color-negative`, `--color-error` e superfícies suaves.
 - Foco: `--color-focus`.
+- Textura pontilhada discreta: `--color-dot-grid`.
 - Movimento funcional: `--dur-micro` e `--dur-short`.
 
-Azul marca apenas ação primária e seleção; não deve tingir cartões de conteúdo ou saldos. Verde significa entrada/sucesso; vermelho significa despesa/erro. Não usar gradientes, roxo, neon, glassmorphism, sombras decorativas ou cartões aninhados.
+Azul marca ações e seleções; não deve preencher cartões de conteúdo ou saldos. Verde significa entrada/sucesso; vermelho significa despesa/erro. A única textura decorativa permitida é uma grade de pontos Cobalt de baixo contraste, limitada ao lado direito do cartão de saldo. Não usar gradientes decorativos, roxo, neon, glassmorphism, sombras decorativas ou cartões aninhados.
 
 ## Tipografia, controles e dados
 
