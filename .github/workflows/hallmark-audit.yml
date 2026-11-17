@@ -30,6 +30,7 @@ jobs:
           node --check offline-store.js
           node --check pwa.js
           node --check sw.js
+          node --check portal.js
       - name: Install browser audit dependencies
         run: npm install --no-save --package-lock=false puppeteer-core
       - name: Record the original app screen
