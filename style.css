@@ -938,7 +938,7 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
 }
 .toast-close:hover { background: var(--color-paper-2); }
 @media (max-width: 40rem) {
-  .main { margin-top: 80px; }
+  .main { margin-top: var(--space-11); }
   .summary-card small, .filter-row, .panel-heading p { font-size: 13px; }
   .summary-card.balance-card strong { font-size: 28px; }
   .empty-state { padding-block: var(--space-4); }
@@ -1014,7 +1014,7 @@ tbody tr:hover td:last-child { background: var(--color-paper); }
     background: var(--color-overlay);
   }
   .mobile-menu { display: inline-grid; flex: 0 0 44px; }
-  .main { margin-top: 80px; }
+  .main { margin-top: var(--space-11); }
   #navigation { gap: var(--space-1); }
   .nav-item { padding-inline: var(--space-2); font-size: 12px; }
   .nav-item > span { display: none; }
@@ -2366,7 +2366,7 @@ footer span { max-width: 60ch; text-align: left; }
   .main {
     width: calc(100% - 32px);
     min-height: 100svh;
-    margin-top: 80px;
+    margin-top: var(--space-11);
   }
   .topbar {
     align-items: center;
