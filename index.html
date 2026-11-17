@@ -10,8 +10,8 @@
 <title>Meu Financeiro</title>
 <link rel="icon" href="favicon.svg?v=20261117-2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="app-icon.svg">
-<link rel="preconnect" ><link rel="preconnect" >
-<link rel="stylesheet" href="style.css?v=20261117-3">
+
+<link rel="stylesheet" href="style.css?v=20261117-4">
 
 
 </head>
@@ -34,7 +34,7 @@
   <main class="main">
     <header class="topbar">
       <button id="menuBtn" class="icon-btn mobile-menu" type="button" aria-label="Abrir menu">☰</button>
-      <div class="topbar-heading"><p id="todayLabel" class="today-label">Seu controle financeiro</p><h2 id="pageTitle">Visão geral</h2></div>
+      <div class="topbar-heading"><h2 id="pageTitle">Visão geral</h2></div>
       <div class="top-actions">
         <span id="syncStatus" class="sync-status" role="status" aria-live="polite">Salvo neste aparelho</span>
         <button id="exportBackupBtn" class="btn secondary backup-btn" type="button">Baixar backup</button>
@@ -64,7 +64,7 @@
       <section id="cardsPage" class="page hidden"><div class="section-intro"><div><h3>Cartões e parcelas</h3><p class="muted">Organize seus cartões e compras parceladas.</p></div><button class="btn primary" id="addCardBtn">＋ Novo cartão</button></div><div id="cardsList" class="cards-grid"></div><div class="section-intro sub-intro"><div><h3>Compras parceladas</h3><p class="muted">O valor mensal é calculado automaticamente.</p></div><button class="btn secondary" id="addInstallmentBtn">＋ Nova compra</button></div><div class="panel" id="installmentsTable"></div></section>
       <section id="billsPage" class="page hidden"><div class="section-intro"><div><h3>Contas a pagar</h3><p class="muted">Acompanhe datas e marque o que já foi pago.</p></div><button class="btn primary" id="addBillBtn">＋ Nova conta</button></div><div class="panel"><div id="billsTable"></div></div></section>
       <section id="goalsPage" class="page hidden"><div class="section-intro"><div><h3>Metas de economia</h3><p class="muted">Cada pequena contribuição aproxima você do objetivo.</p></div><button class="btn primary" id="addGoalBtn">＋ Nova meta</button></div><div id="goalsList" class="goals-grid"></div></section>
-      <section id="reportsPage" class="page hidden"><div class="section-intro"><div><h3>Relatórios</h3><p class="muted">Entenda seus hábitos financeiros sem complicação.</p></div></div><div class="summary-grid report-summary"><article class="summary-card"><span class="muted">Taxa de economia</span><strong id="savingRate">—</strong><small class="muted">Saldo ÷ entradas</small></article><article class="summary-card"><span class="muted">Maior categoria</span><strong id="topCategory">—</strong><small class="muted">No período selecionado</small></article></div><div class="panel"><div class="panel-heading"><div><h3>Resumo por categoria</h3><p class="muted">Despesas no período selecionado</p></div></div><div id="reportCategories"></div></div></section>
+      <section id="reportsPage" class="page hidden"><div class="section-intro"><div><h3>Relatórios</h3><p class="muted">Entenda seus hábitos financeiros sem complicação.</p></div></div><div class="summary-grid report-summary"><article class="summary-card"><span class="muted">Taxa de economia</span><strong id="savingRate">Sem dados</strong><small class="muted">Saldo ÷ entradas</small></article><article class="summary-card"><span class="muted">Maior categoria</span><strong id="topCategory">Sem dados</strong><small class="muted">No período selecionado</small></article></div><div class="panel"><div class="panel-heading"><div><h3>Resumo por categoria</h3><p class="muted">Despesas no período selecionado</p></div></div><div id="reportCategories"></div></div></section>
     </div>
     <footer>Os dados ficam neste navegador. Exporte um backup para trocar de aparelho. <span>Valores em reais (BRL).</span></footer>
   </main>
