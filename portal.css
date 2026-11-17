@@ -144,6 +144,7 @@ a:focus-visible {
   gap: 24px;
   color: var(--portal-white);
   pointer-events: none;
+  opacity: var(--gp-caption, 1);
 }
 
 .gp-logo {
