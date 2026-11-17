@@ -1,229 +1,89 @@
-const C=window.APP_CONFIG||{},$=id=>document.getElementById(id),fmt=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n||0)),day=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},month=()=>day().slice(0,7),df=s=>s?new Date(s+"T12:00:00").toLocaleDateString("pt-BR"):"—",esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id),fmt=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(n||0)),day=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},month=()=>day().slice(0,7),df=s=>s?new Date(s+"T12:00:00").toLocaleDateString("pt-BR"):"—",esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const LOCAL_PROFILE_ID="financeiro-amigo-local-profile";
 const cats=["Moradia","Alimentação","Transporte","Saúde","Educação","Lazer","Compras","Assinaturas","Salário","Freelance","Investimentos","Outros"],titles={dashboard:"Visão geral",transactions:"Lançamentos",cards:"Cartões e parcelas",bills:"Contas a pagar",goals:"Metas de economia",reports:"Relatórios"},tables={transaction:"transactions",card:"cards",installment:"installments",bill:"bills",goal:"goals"};
-let db,user,rows={transactions:[],cards:[],installments:[],bills:[],goals:[]},edit=null,kind=null,authMode="in";
-function msg(id,s){$(id).textContent=s||""}function toast(s,err=false){let e=$("toast");e.textContent=s;e.classList.toggle("error",err);e.classList.remove("hidden");setTimeout(()=>e.classList.add("hidden"),3500)}
+let db=null,user,rows={transactions:[],cards:[],installments:[],bills:[],goals:[]},edit=null,kind=null;
+function parseMoney(value){const raw=String(value??"").trim().replace(/R\$|\s/g,"");if(!raw)return null;let normalized=raw;if(raw.includes(",")&&raw.includes(".")){normalized=raw.lastIndexOf(",")>raw.lastIndexOf(".")?raw.replace(/\./g,"").replace(",","."):raw.replace(/,/g,"")}else if(raw.includes(",")){normalized=raw.replace(",",".")}const number=Number(normalized);return Number.isFinite(number)?number:NaN}\nfunction msg(id,s){const node=$(id);if(node)node.textContent=s||""}
+function toast(s,err=false){const e=$("toast");if(!e)return;e.textContent=s;e.classList.toggle("error",err);e.classList.remove("hidden");window.setTimeout(()=>e.classList.add("hidden"),3500)}
 function init(){
  if($("monthFilter"))$("monthFilter").value=month();
- const passwordInput=$("password"),togglePassword=$("togglePassword");
- if(passwordInput&&togglePassword){
-  togglePassword.addEventListener("click",()=>{
-   const show=passwordInput.type==="password";
-   passwordInput.type=show?"text":"password";
-   togglePassword.setAttribute("aria-pressed",String(show));
-   togglePassword.setAttribute("aria-label",show?"Ocultar senha":"Mostrar senha");
-   togglePassword.title=show?"Ocultar senha":"Mostrar senha";
-   togglePassword.innerHTML=show
-    ?'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 002.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0112 5c6.4 0 10 7 10 7a16 16 0 01-3.1 3.8"/><path d="M6.2 6.2C3.6 8 2 12 2 12s3.6 7 10 7c1.4 0 2.7-.3 3.8-.8"/></svg>'
-    :'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
-  });
- }
-
- const confirmInput=$("confirmPassword"),toggleConfirm=$("toggleConfirmPassword");
- if(confirmInput&&toggleConfirm){
-  toggleConfirm.addEventListener("click",()=>{
-   const show=confirmInput.type==="password";
-   confirmInput.type=show?"text":"password";
-   toggleConfirm.setAttribute("aria-pressed",String(show));
-   toggleConfirm.setAttribute("aria-label",show?"Ocultar confirmação da senha":"Mostrar confirmação da senha");
-   toggleConfirm.title=show?"Ocultar confirmação da senha":"Mostrar confirmação da senha";
-   toggleConfirm.innerHTML=show
-    ?'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 002.8 2.8"/><path d="M9.9 5.2A10.8 10.8 0 0112 5c6.4 0 10 7 10 7a16 16 0 01-3.1 3.8"/><path d="M6.2 6.2C3.6 8 2 12 2 12s3.6 7 10 7c1.4 0 2.7-.3 3.8-.8"/></svg>'
-    :'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
-  });
- }
- const configured=!!(window.supabase&&C.SUPABASE_URL&&C.SUPABASE_ANON_KEY);
- if(configured)db=window.supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY);
- else {msg("authMessage","O acesso ainda não foi configurado. O responsável precisa conectar o banco Supabase para liberar o login.");["signInBtn","signUpBtn","resetBtn"].forEach(id=>$(id).disabled=true);if(!navigator.onLine)restoreOfflineSession()}
- if(db){
-  $("signInBtn").onclick=()=>auth("in");
-  $("signUpBtn").onclick=()=>authMode==="up"?auth("up"):setAuthMode("up");
-  $("backToLoginBtn").onclick=()=>setAuthMode("in");
-  $("resetBtn").onclick=async()=>{let email=$("email").value.trim();if(!email)return msg("authMessage","Informe seu e-mail.");let r=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});msg("authMessage",r.error?.message||"Se o e-mail estiver cadastrado, você receberá instruções.")};
-  db.auth.onAuthStateChange((_e,s)=>setTimeout(()=>{
-   if(s?.user)enter(s.user);
-   else if(!navigator.onLine)restoreOfflineSession();
-   else leave();
-  },0));
-  db.auth.getSession().then(({data:{session}})=>{
-   if(session?.user)enter(session.user);
-   else if(!navigator.onLine)restoreOfflineSession();
-   else leave();
-  }).catch(()=>restoreOfflineSession());
- }
- $("signOutBtn").onclick=()=>{
-  if(document.body.classList.contains("demo-mode")){leave();return}
-  if(window.FinanceOffline)FinanceOffline.clearRememberedUser();
-  db?.auth.signOut();
-};
- $("navigation").onclick=e=>{let b=e.target.closest("[data-page]");if(b)go(b.dataset.page)};
+ $("navigation").onclick=e=>{const b=e.target.closest("[data-page]");if(b)go(b.dataset.page)};
  document.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
- $("menuBtn").onclick=()=>$("app").querySelector(".sidebar").classList.toggle("open");$("monthFilter").onchange=render;
- $("quickAddBtn").onclick=$("addTransactionBtn").onclick=()=>{if(db&&!document.body.classList.contains("demo-mode"))open("transaction")};
- $("addCardBtn").onclick=()=>{if(db&&!document.body.classList.contains("demo-mode"))open("card")};
- $("addInstallmentBtn").onclick=()=>{if(db&&!document.body.classList.contains("demo-mode"))open("installment")};
- $("addBillBtn").onclick=()=>{if(db&&!document.body.classList.contains("demo-mode"))open("bill")};
- $("addGoalBtn").onclick=()=>{if(db&&!document.body.classList.contains("demo-mode"))open("goal")};
- $("transactionSearch").oninput=renderTransactions;$("typeFilter").onchange=renderTransactions;
+ $("menuBtn").onclick=()=>$("app").querySelector(".sidebar").classList.toggle("open");
+ $("monthFilter").onchange=render;
+ $("quickAddBtn").onclick=$("addTransactionBtn").onclick=()=>open("transaction");
+ $("addCardBtn").onclick=()=>open("card");
+ $("addInstallmentBtn").onclick=()=>open("installment");
+ $("addBillBtn").onclick=()=>open("bill");
+ $("addGoalBtn").onclick=()=>open("goal");
+ $("transactionSearch").oninput=renderTransactions;
+ $("typeFilter").onchange=renderTransactions;
  $("closeModalBtn").onclick=$("cancelModalBtn").onclick=close;
  $("modalBackdrop").onclick=e=>{if(e.target===$("modalBackdrop"))close()};
- $("editorForm").onsubmit=save;document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
- window.addEventListener("online",handleNetworkOnline);
- window.addEventListener("offline",()=>refreshSyncStatus());
- document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&navigator.onLine&&user&&!user.offlineOnly)load()});
- window.addEventListener("finance-sync-state",()=>refreshSyncStatus());
+ $("editorForm").onsubmit=save;
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+ $("exportBackupBtn").onclick=exportBackup;
+ $("importBackupBtn").onclick=()=>$("backupFileInput").click();
+ $("backupFileInput").onchange=restoreBackup;
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&user)load()});
+ enterLocalSpace();
 }
-function setAuthMode(mode){
- authMode=mode;
- const registering=mode==="up";
- $("authTitle").innerHTML=registering?'Crie sua conta<br><span>organize seu futuro.</span>':'Cuide bem do<br><span>seu dinheiro.</span>';
- $("authSubtitle").textContent=registering
-  ?"Cadastre-se para guardar seus dados e acessar seu espaço financeiro em outros dispositivos."
-  :"Um lugar simples para entender seu dinheiro e planejar os próximos passos.";
- $("signInBtn").classList.toggle("hidden",registering);
- $("signUpBtn").className="btn "+(registering?"primary":"secondary")+" full";
- $("signUpBtn").textContent=registering?"Criar conta":"Criar minha conta";
- $("confirmPasswordField").classList.toggle("hidden",!registering);
- $("backToLoginBtn").classList.toggle("hidden",!registering);
- $("resetBtn").classList.toggle("hidden",registering);
- msg("authMessage","");
-}
-async function auth(mode){
- if(mode==="up"){msg("authMessage","O cadastro é fechado. Somente a pessoa autorizada pode acessar este espaço.");return;}
-
- let email=$("email").value.trim(),password=$("password").value;
- if(!email||!password)return msg("authMessage","Preencha e-mail e senha.");
- if(password.length<8)return msg("authMessage","Use uma senha com pelo menos 8 caracteres.");
- if(mode==="up"&&password!==$("confirmPassword").value)return msg("authMessage","As senhas não coincidem. Confira e tente novamente.");
- let b=$(mode==="in"?"signInBtn":"signUpBtn");
- b.disabled=true;
- try{
-  let r=mode==="in"
-   ?await db.auth.signInWithPassword({email,password})
-   :await db.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
-  if(r.error){
-   const raw=r.error.message||"";
-   let friendly=/invalid login credentials/i.test(raw)?"E-mail ou senha incorretos."
-    :/user already registered|already registered/i.test(raw)?"Este e-mail já possui uma conta. Entre ou use a recuperação de senha."
-    :/password should be at least|weak password/i.test(raw)?"A senha é fraca. Use uma senha com pelo menos 8 caracteres."
-    :/email rate limit|rate limit/i.test(raw)?"Muitas tentativas em pouco tempo. Aguarde um pouco e tente novamente."
-    :raw;
-   msg("authMessage",friendly);
-  }else if(mode==="up"&&!r.data.session){
-   setAuthMode("in");
-   $("password").value="";
-   if($("confirmPassword"))$("confirmPassword").value="";
-   msg("authMessage","Cadastro iniciado! Confira seu e-mail para confirmar a conta e depois entre.");
-  }else msg("authMessage","Entrando…");
- }catch(err){
-  console.error("Erro de autenticação:",err);
-  msg("authMessage","Não foi possível conectar ao Supabase. Verifique sua conexão e tente novamente.");
- }finally{
-  b.disabled=false;
- }
-}
-function leave(){
- document.body.classList.remove("demo-mode");
- user=null;
- $("signOutBtn").textContent="↪ Sair da conta";
- $("app").classList.add("hidden");
- $("authScreen").classList.remove("hidden");
- const status=$("syncStatus");if(status)status.classList.add("hidden");
-}
-async function restoreOfflineSession(){
- if(navigator.onLine||!window.FinanceOffline)return;
- const cached=FinanceOffline.rememberedUser();
- if(cached&&cached.id)await enterOffline(cached);
-}
-async function enterOffline(cached){
- if(!cached||!cached.id||!window.FinanceOffline)return;
- user={id:cached.id,email:cached.email||"",offlineOnly:true};
- document.body.classList.remove("demo-mode");
+async function enterLocalSpace(){
+ user={id:LOCAL_PROFILE_ID,email:"Salvo neste aparelho",offlineOnly:true};
  $("authScreen").classList.add("hidden");
  $("app").classList.remove("hidden");
- $("userEmail").textContent=(user.email||"Conta salva")+" · modo offline";
- $("avatar").textContent=(user.email||"M")[0].toUpperCase();
- $("todayLabel").textContent="MODO OFFLINE · SALVANDO NESTE DISPOSITIVO";
- $("signOutBtn").textContent="↪ Sair da conta";
+ $("userEmail").textContent="Armazenamento local";
+ $("avatar").textContent="M";
+ $("todayLabel").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
  await load();
- refreshSyncStatus();
-}
-async function handleNetworkOnline(){
- if(!db){location.reload();return}
- if(!user){refreshSyncStatus();return}
- if(user.offlineOnly){
-  try{
-   const result=await db?.auth.getSession();
-   if(result?.data?.session?.user){await enter(result.data.session.user);return}
-  }catch(_){}
-  toast("Internet voltou. Entre na sua conta para sincronizar as alterações.",true);
-  refreshSyncStatus();
-  return;
- }
- if(user.id&&db&&window.FinanceOffline){
-  try{
-   const result=await FinanceOffline.sync(user.id,db);
-   rows=result.rows||rows;
-   render();
-   refreshSyncStatus();
-   if(result.pendingCount===0)toast("Seus dados estão sincronizados.");
-   else toast("Há alterações aguardando sincronização.",true);
-  }catch(error){console.warn("Sincronização:",error);refreshSyncStatus()}
- }
 }
 async function refreshSyncStatus(){
  const badge=$("syncStatus");
  if(!badge)return;
- if(!user||document.body.classList.contains("demo-mode")){badge.classList.add("hidden");return}
  badge.classList.remove("hidden");
- const onlineNow=navigator.onLine;
- let status={online:onlineNow,pendingCount:0,lastError:null};
- if(window.FinanceOffline)status=await FinanceOffline.getStatus(user.id);
- badge.classList.toggle("is-offline",!onlineNow);
- badge.classList.toggle("has-pending",status.pendingCount>0||Boolean(status.lastError));
- badge.title=status.lastError||"";
- if(!onlineNow)badge.textContent="● Offline · salvo neste aparelho";
- else if(user.offlineOnly)badge.textContent="● Entre para sincronizar";
- else if(status.lastError)badge.textContent="● Sincronização pendente";
- else if(status.pendingCount>0)badge.textContent="● "+status.pendingCount+" alteração(ões) pendente(s)";
- else badge.textContent="● Sincronizado";
+ badge.textContent="Salvo neste aparelho";
+ badge.title="Os dados ficam neste navegador. Exporte um backup para guardá-los.";
 }
-function enterDemo(){user=null;document.body.classList.add("demo-mode");$("authScreen").classList.add("hidden");$("app").classList.remove("hidden");$("userEmail").textContent="Modo demonstração · dados fictícios";$("avatar").textContent="D";$("signOutBtn").textContent="↩ Sair da demonstração";$("todayLabel").textContent="CONHEÇA SEU ESPAÇO FINANCEIRO";let m=month(),d=n=>m+"-"+String(n).padStart(2,"0");rows={transactions:[{id:"d1",type:"income",description:"Salário",amount:3200,date:d(5),category:"Salário"},{id:"d2",type:"expense",description:"Compras do mercado",amount:286.45,date:d(7),category:"Alimentação"},{id:"d3",type:"expense",description:"Conta de energia",amount:148.9,date:d(10),category:"Moradia"},{id:"d4",type:"expense",description:"Transporte",amount:95,date:d(12),category:"Transporte"},{id:"d5",type:"expense",description:"Assinaturas",amount:39.9,date:d(15),category:"Assinaturas"},{id:"d6",type:"income",description:"Trabalho extra",amount:450,date:d(16),category:"Freelance"}],cards:[{id:"c1",name:"Cartão principal",bank:"Nubank",network:"Mastercard",last_four:"4821",limit_amount:2500,closing_day:20,due_day:28}],installments:[{id:"i1",description:"Fone de ouvido",card_id:"c1",total_amount:360,installments_count:6,paid_installments:2,purchase_date:d(3)}],bills:[{id:"b1",name:"Internet",amount:99.9,due_date:d(22),paid:false,category:"Internet"},{id:"b2",name:"Energia elétrica",amount:148.9,due_date:d(10),paid:false,category:"Energia"},{id:"b3",name:"Streaming",amount:34.9,due_date:d(25),paid:true,category:"Assinatura"}],goals:[{id:"g1",name:"Reserva de emergência",target_amount:5000,saved_amount:1750,target_date:null},{id:"g2",name:"Viagem dos sonhos",target_amount:2500,saved_amount:620,target_date:d(30)}]};$("monthFilter").value=m;$("transactionSearch").value="";$("typeFilter").value="";render();go("dashboard") }
-async function enter(u){
- if(!u||!u.id)return;
- user={...u,offlineOnly:false};
- if(window.FinanceOffline)FinanceOffline.rememberUser(user);
- document.body.classList.remove("demo-mode");
- $("authScreen").classList.add("hidden");
- $("app").classList.remove("hidden");
- $("userEmail").textContent=u.email||"";
- $("avatar").textContent=(u.email||"M")[0].toUpperCase();
- $("todayLabel").textContent=new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"}).toUpperCase();
- await load();
+async function exportBackup(){
+ try{
+  const contents=await FinanceOffline.exportBackup(user.id);
+  const blob=new Blob([contents],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="financeiro-amigo-backup-"+day()+".json";
+  document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);
+  toast("Backup baixado. Guarde o arquivo em um local seguro.");
+ }catch(error){toast(error.message||"Não foi possível criar o backup.",true)}
+}
+async function restoreBackup(event){
+ const file=event.target.files?.[0];
+ if(!file)return;
+ try{
+  if(file.size>5*1024*1024)throw new Error("O arquivo é maior que o limite de 5 MB.");
+  if(!window.confirm("Restaurar este backup substituirá os dados atuais deste aparelho. Exporte um backup atual antes de continuar. Deseja prosseguir?"))return;
+  const result=await FinanceOffline.restoreBackup(user.id,await file.text());
+  rows=await FinanceOffline.getRows(user.id);render();go("dashboard");
+  const total=Object.values(result.counts).reduce((sum,value)=>sum+value,0);
+  toast(total+" registro(s) restaurado(s) com sucesso.");
+ }catch(error){toast(error.message||"Não foi possível restaurar este backup.",true)}
+ finally{event.target.value=""}
 }
 function go(p){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$(p+"Page").classList.remove("hidden");document.querySelectorAll(".nav-item[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===p));$("pageTitle").textContent=titles[p];$("app").querySelector(".sidebar").classList.remove("open");render();scrollTo({top:0,behavior:"smooth"})}
 async function load(){
- if(!user||!user.id||!window.FinanceOffline)return;
+ if(!user||!window.FinanceOffline)return;
  try{
   rows=await FinanceOffline.getRows(user.id);
   render();
-  refreshSyncStatus();
-  const result=await FinanceOffline.load(user.id,db,!user.offlineOnly);
-  rows=result.rows||rows;
-  render();
-  refreshSyncStatus();
-  if(result.error&&!user.offlineOnly&&navigator.onLine){
-   console.warn("Sincronização financeira:",result.error);
-   toast("Algumas alterações ainda não sincronizaram. Confira sua conexão ou entre novamente.",true);
-  }
+  await refreshSyncStatus();
  }catch(error){
   console.error("Falha ao abrir dados locais:",error);
-  toast(error.message||"Não foi possível abrir os dados financeiros neste dispositivo.",true);
+  toast(error.message||"Não foi possível abrir os dados salvos neste aparelho.",true);
  }
 }
 function monthly(){let m=$("monthFilter").value||month();return rows.transactions.filter(t=>(t.date||"").startsWith(m))}function sum(a){return a.reduce((s,x)=>s+Number(x.amount||0),0)}function group(a){let g={};a.forEach(x=>g[x.category||"Outros"]=(g[x.category||"Outros"]||0)+Number(x.amount));return Object.entries(g).sort((a,b)=>b[1]-a[1])}
 function bars(g,limit=99){let max=g[0]?.[1]||1;return g.length?g.slice(0,limit).map(([n,v])=>'<div class="category-line"><span class="cat-name">'+esc(n)+'</span><div class="bar-track"><div class="bar-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+fmt(v)+'</strong></div>').join(""):'<div class="empty-state">Seus gastos aparecerão aqui quando você registrar lançamentos.</div>'}
 function render(){dashboard();renderTransactions();renderCards();renderInstallments();renderBills();renderGoals();reports()}
-function dashboard(){let a=monthly(),inc=sum(a.filter(x=>x.type==="income")),exp=sum(a.filter(x=>x.type==="expense"));$("balanceValue").textContent=fmt(inc-exp);$("incomeValue").textContent=fmt(inc);$("expenseValue").textContent=fmt(exp);let pending=rows.bills.filter(x=>!x.paid);$("pendingValue").textContent=fmt(sum(pending));$("pendingHint").textContent=pending.filter(x=>x.due_date<day()).length+" conta(s) atrasada(s)";$("categoryChart").innerHTML=bars(group(a.filter(x=>x.type==="expense")),6);let bills=pending.sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,4);$("upcomingBills").innerHTML=bills.length?bills.map(b=>'<div class="compact-item"><div><strong>'+esc(b.name)+'</strong><small>'+df(b.due_date)+' · '+(b.due_date<day()?"Vencida":"A vencer")+'</small></div><strong>'+fmt(b.amount)+'</strong></div>').join(""):'<div class="empty-state">Nenhuma conta pendente.</div>';$("recentTransactions").innerHTML=txTable([...a].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,5),false)}
+function dashboard(){let a=monthly(),inc=sum(a.filter(x=>x.type==="income")),exp=sum(a.filter(x=>x.type==="expense"));$("balanceValue").textContent=fmt(inc-exp);$("incomeValue").textContent=fmt(inc);$("expenseValue").textContent=fmt(exp);let pending=rows.bills.filter(x=>!x.paid);$("categoryChart").innerHTML=bars(group(a.filter(x=>x.type==="expense")),6);let bills=pending.sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,4);$("upcomingBills").innerHTML=bills.length?bills.map(b=>'<div class="compact-item"><div><strong>'+esc(b.name)+'</strong><small>'+df(b.due_date)+' · '+(b.due_date<day()?"Vencida":"A vencer")+'</small></div><strong>'+fmt(b.amount)+'</strong></div>').join(""):'<div class="empty-state">Nenhuma conta pendente.</div>';$("recentTransactions").innerHTML=txTable([...a].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,5),false)}
 function txTable(a,actions=true){if(!a.length)return '<div class="empty-state">Nenhum lançamento encontrado.</div>';return '<div class="table-wrap"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Valor</th>'+(actions?"<th>Ações</th>":"")+'</tr></thead><tbody>'+a.map(t=>'<tr><td><strong>'+esc(t.description)+'</strong></td><td><span class="tag">'+esc(t.category||"Outros")+'</span></td><td>'+df(t.date)+'</td><td class="'+(t.type==="income"?"amount-income":"amount-expense")+'">'+(t.type==="income"?"+":"−")+' '+fmt(t.amount)+'</td>'+(actions?'<td><button class="mini-btn" data-edit="transaction" data-id="'+t.id+'">Editar</button> <button class="mini-btn danger" data-del="transaction" data-id="'+t.id+'">Excluir</button></td>':"")+'</tr>').join("")+'</tbody></table></div>'}
 function renderTransactions(){let q=($("transactionSearch").value||"").toLowerCase(),t=$("typeFilter").value,a=[...rows.transactions].filter(x=>(!q||(x.description+" "+x.category).toLowerCase().includes(q))&&(!t||x.type===t)).sort((a,b)=>b.date.localeCompare(a.date));$("transactionsTable").innerHTML=txTable(a);actions($("transactionsTable"))}
 function bankIdentity(bank){
@@ -256,12 +116,12 @@ function actions(root){root.querySelectorAll("[data-edit]").forEach(b=>b.onclick
 function find(k,id){return rows[tables[k]].find(x=>x.id===id)}
 async function remove(k,id){
  if(!confirm("Excluir este registro? Essa ação não pode ser desfeita."))return;
- if(!user||!window.FinanceOffline)return toast("Entre na sua conta para alterar seus dados.",true);
+ if(!user||!window.FinanceOffline)return toast("Não foi possível abrir o armazenamento local.",true);
  try{
   await FinanceOffline.remove(user.id,db,tables[k],id,!user.offlineOnly);
   rows=await FinanceOffline.getRows(user.id);
   render();refreshSyncStatus();
-  toast(navigator.onLine&&!user.offlineOnly?"Registro excluído.":"Excluído neste aparelho; será sincronizado ao reconectar.");
+  toast("Registro excluído deste aparelho.");
  }catch(error){toast(error.message||"Não foi possível excluir o registro.",true)}
 }
 async function update(table,id,p){
@@ -270,10 +130,17 @@ async function update(table,id,p){
   await FinanceOffline.update(user.id,db,table,id,p,!user.offlineOnly);
   rows=await FinanceOffline.getRows(user.id);
   render();refreshSyncStatus();
-  toast(navigator.onLine&&!user.offlineOnly?"Atualizado.":"Alteração salva neste aparelho para sincronizar depois.");
+  toast("Alteração salva neste aparelho.");
  }catch(error){toast(error.message||"Não foi possível atualizar.",true)}
 }
-function field(n,l,t="text",o={}){let c;if(t==="select")c='<select name="'+n+'" '+(o.required?"required":"")+'>'+o.options.map(x=>'<option value="'+esc(x.value)+'">'+esc(x.label)+'</option>').join("")+'</select>';else if(t==="textarea")c='<textarea name="'+n+'" rows="3"></textarea>';else c='<input name="'+n+'" type="'+t+'" '+(o.required?"required":"")+(o.min!==undefined?' min="'+o.min+'"':"")+(o.step?' step="'+o.step+'"':"")+(o.placeholder?' placeholder="'+esc(o.placeholder)+'"':"")+'>';return '<div class="form-field'+(o.full?" full-field":"")+'"><label>'+l+'</label>'+c+'</div>'}
+function field(n,l,t="text",o={}){
+ const id="field-"+n;let c;
+ if(t==="select")c='<select id="'+id+'" name="'+n+'" '+(o.required?"required":"")+'>'+o.options.map(x=>'<option value="'+esc(x.value)+'">'+esc(x.label)+'</option>').join("")+'</select>';
+ else if(t==="textarea")c='<textarea id="'+id+'" name="'+n+'" rows="3"></textarea>';
+ else if(t==="money")c='<input id="'+id+'" name="'+n+'" type="text" inputmode="decimal" autocomplete="off" data-money="true" '+(o.required?"required":"")+' placeholder="'+esc(o.placeholder||"0,00")+'">';
+ else c='<input id="'+id+'" name="'+n+'" type="'+t+'" '+(o.required?"required":"")+(o.min!==undefined?' min="'+o.min+'"':"")+(o.step?' step="'+o.step+'"':"")+(o.placeholder?' placeholder="'+esc(o.placeholder)+'"':"")+'>';
+ return '<div class="form-field'+(o.full?" full-field":"")+'"><label for="'+id+'">'+esc(l)+(o.required?' <span class="required-word">obrigatório</span>':'')+'</label>'+c+'</div>';
+}
 function open(k,rec=null){edit=rec;kind=k;msg("formMessage","");let f=[],add=(...a)=>f.push(field(...a)),sel=a=>a.map(x=>({value:x,label:x}));if(k==="transaction"){add("type","Tipo","select",{required:true,options:[{value:"expense",label:"Despesa"},{value:"income",label:"Entrada"}]});add("description","Descrição","text",{required:true});add("amount","Valor (R$)","number",{required:true,min:"0.01",step:"0.01"});add("category","Categoria","select",{options:sel(cats)});add("date","Data","date",{required:true});add("payment_method","Forma de pagamento","select",{options:sel(["Pix","Dinheiro","Débito","Crédito","Transferência","Outro"])});add("notes","Observações","textarea",{full:true})}
 if(k==="card"){add("name","Nome do cartão","text",{required:true});add("bank","Instituição / banco","text",{placeholder:"Ex.: Nubank, Itaú, Inter..."});add("network","Bandeira do cartão","select",{required:true,options:[{value:"Visa",label:"Visa"},{value:"Mastercard",label:"Mastercard"},{value:"Elo",label:"Elo"},{value:"Hipercard",label:"Hipercard"},{value:"American Express",label:"American Express"},{value:"Outra",label:"Outra"}]});add("last_four","Últimos 4 dígitos","text",{placeholder:"Opcional"});add("limit_amount","Limite total (R$)","number",{min:"0",step:"0.01"});add("closing_day","Dia de fechamento","number",{min:"1",step:"1"});add("due_day","Dia de vencimento","number",{min:"1",step:"1"})}
 if(k==="installment"){add("description","Descrição da compra","text",{required:true});add("card_id","Cartão","select",{required:true,options:rows.cards.map(c=>({value:c.id,label:c.name}))});add("total_amount","Valor total (R$)","number",{required:true,min:"0.01",step:"0.01"});add("installments_count","Quantidade de parcelas","number",{required:true,min:"1",step:"1"});add("paid_installments","Parcelas já pagas","number",{required:true,min:"0",step:"1"});add("purchase_date","Data da compra","date",{required:true})}
@@ -285,8 +152,8 @@ function close(){$("modalBackdrop").classList.add("hidden");edit=null;kind=null}
 async function save(e){
  e.preventDefault();
  if(!kind)return;
- if(!user||!window.FinanceOffline)return msg("formMessage","Entre na sua conta para salvar dados.");
- let v=Object.fromEntries(new FormData(e.target).entries()),k=kind,table=tables[k],p={},num=n=>v[n]===""||v[n]===undefined?null:Number(v[n]);
+ if(!user||!window.FinanceOffline)return msg("formMessage","Não foi possível abrir o armazenamento local.");
+ let v=Object.fromEntries(new FormData(e.target).entries()),k=kind,table=tables[k],p={},num=n=>parseMoney(v[n]);
  if(k==="transaction")p={type:v.type,description:v.description.trim(),amount:num("amount"),category:v.category||"Outros",date:v.date,payment_method:v.payment_method||null,notes:v.notes||null};
  if(k==="card")p={name:v.name.trim(),bank:v.bank?.trim()||null,network:v.network||"Visa",last_four:v.last_four?.trim()||null,limit_amount:num("limit_amount"),closing_day:num("closing_day"),due_day:num("due_day")};
  if(k==="installment"){
@@ -302,7 +169,7 @@ async function save(e){
   try{
    await FinanceOffline.update(user.id,db,"goals",edit.id,{saved_amount:Number(edit.saved_amount)+amount},!user.offlineOnly);
    close();rows=await FinanceOffline.getRows(user.id);render();refreshSyncStatus();
-   toast(navigator.onLine&&!user.offlineOnly?"Economia registrada!":"Economia salva neste aparelho; sincronizará ao reconectar.");
+   toast("Economia registrada neste aparelho.");
   }catch(error){msg("formMessage",error.message||"Não foi possível registrar a economia.");}
   return;
  }
@@ -315,13 +182,10 @@ async function save(e){
   close();
   rows=await FinanceOffline.getRows(user.id);
   render();refreshSyncStatus();
-  toast(navigator.onLine&&!user.offlineOnly?"Registro salvo.":"Salvo neste aparelho; será sincronizado quando houver internet.");
+  toast("Registro salvo neste aparelho.");
  }catch(error){
   console.error("Falha ao salvar localmente:",error);
   msg("formMessage",error.message||"Não foi possível salvar neste aparelho.");
  }finally{if(btn)btn.disabled=false}
 }
-// O botão de demonstração usa delegação de eventos para continuar funcionando mesmo se
-// algum componente opcional da tela de login causar erro durante a inicialização.
-document.addEventListener("click",e=>{const b=e.target.closest("#demoBtn");if(!b)return;e.preventDefault();try{enterDemo()}catch(err){console.error("Falha ao abrir a demonstração:",err);const m=$("authMessage");if(m)m.textContent="Não foi possível abrir a demonstração. Atualize a página e tente novamente."}},true);
 init();
