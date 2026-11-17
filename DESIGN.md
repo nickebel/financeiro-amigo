@@ -1,9 +1,9 @@
-# Design System — Meu Financeiro
+# Design System — Ray
 
-**Direção:** minimalismo editorial monocromático.
-**Objetivo:** destacar valores, nomes e registros por tipografia, grade e espaço negativo — não por pilhas de cartões.
+**Produto:** Ray — finanças pessoais.
+**Direção:** minimalismo editorial com dois temas: claro e escuro azul.
 
-## Paleta
+## Tema claro
 
 - Fundo: `#FAFAFA`
 - Superfície: `#FFFFFF`
@@ -12,35 +12,40 @@
 - Texto auxiliar: `#707070`
 - Divisórias: `#E5E5E5`
 - Divisórias fortes: `#CFCFCF`
-- Única cor de ação: `#003459` (reservada aos botões primários e seu foco acessível)
+- Cor única de ação: `#003459`
 
-Não usar gradientes, tons coloridos em gráficos, cartões, entradas ou despesas, vidro, sombras pesadas ou superfícies coloridas.
+## Tema escuro azul
 
-## Tipografia
+- Fundo: `#071B31`
+- Superfície: `#0B2745`
+- Superfície elevada: `#0D2D4D`
+- Texto principal: `#EAF4FF`
+- Texto secundário: `#C4D8EF`
+- Texto auxiliar: `#91AAC5`
+- Divisórias: `#1D3B59`
+- Azul de ação: `#63B3FF`
+- Foco: `#8CC8FF`
 
-Duas famílias locais:
-- Display editorial: Baskerville / Iowan Old Style / Palatino / Georgia para títulos e valores em destaque.
-- Interface: Segoe UI e fallback sans-serif do sistema para corpo, navegação, tabelas e controles.
+O tema escuro usa variações da mesma família azul. Sem gradientes, vidro, sombras pesadas ou cores decorativas.
 
-## Composição
+## Tipografia e composição
 
+- Display editorial: Baskerville / Iowan Old Style / Palatino / Georgia.
+- Interface: Segoe UI e fallback sans-serif do sistema.
 - Respiro entre grandes seções de 96 a 128px.
-- A hierarquia vem de tamanho, peso, alinhamento e divisórias finas.
-- Cards de resumo são superfícies transparentes: saldo em primeiro plano, entradas e despesas em segundo.
-- Grids assimétricos e alinhados com `minmax(0, ...)`; cartões e metas não se repetem em caixas idênticas.
-- Tabelas permanecem planas, com divisórias horizontais e rolagem local em telas estreitas.
-- Navegação textual, sem ícones decorativos genéricos.
-- Cantos retos, sem sombras e sem glassmorphism.
+- Parágrafos limitados a 60ch; títulos usam `text-wrap: balance`; parágrafos usam `text-wrap: pretty`.
+- Títulos com line-height 1.12; corpo com 1.55.
+- Palavras não se partem no meio; botões e navegação não quebram rótulos.
+- Hierarquia baseada em tipografia, alinhamento e divisórias finas.
 
-## Leitura e acessibilidade
+## Tema e preferência
 
-- Parágrafos e textos corridos limitados a 60ch.
-- Títulos usam `text-wrap: balance`; parágrafos usam `text-wrap: pretty`.
-- Line-height de títulos em 1.12 e corpo em 1.55.
-- Palavras não são divididas no meio; ações e navegação não quebram os rótulos.
-- Foco visível com a mesma cor de ação; alvos de toque de pelo menos 44px.
-- Respeitar `prefers-reduced-motion`.
+- O tema claro editorial é o padrão inicial.
+- O botão **Modo azul / Modo claro** alterna entre os dois temas.
+- A preferência é salva em `localStorage` sob a chave `ray-theme-preference`; isso guarda apenas a aparência, não os dados financeiros.
+- A cor da barra do navegador acompanha o tema selecionado.
+- O PWA usa o mesmo nome e ícone de Ray.
 
 ## Integridade e privacidade
 
-O app mantém seis destinos, formulários, IDs, handlers, CRUD, cálculos, IndexedDB, backup manual, PWA e funcionamento offline. Não há login, API, banco remoto ou sincronização automática. Backups JSON nunca devem ser versionados.
+O Ray mantém os seis destinos, formulários, IDs, handlers, CRUD, cálculos e a mesma identificação de perfil IndexedDB usada pelo app. Os registros financeiros e backups continuam locais. Não há login, API, banco remoto ou sincronização automática.
