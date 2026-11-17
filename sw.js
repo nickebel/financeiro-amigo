@@ -1,17 +1,18 @@
 /* App shell PWA; o conteúdo financeiro é guardado apenas no IndexedDB deste navegador. */
-const CACHE_NAME = "financeiro-amigo-shell-v8";
+const CACHE_NAME = "financeiro-amigo-shell-v9";
 const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   BASE_URL.href,
   new URL("index.html", BASE_URL).href,
-  new URL("style.css?v=20261117-12", BASE_URL).href,
+  new URL("style.css?v=20261117-13", BASE_URL).href,
   new URL("app.js?v=20261117-3", BASE_URL).href,
   new URL("pwa.js?v=20261117-2", BASE_URL).href,
   new URL("offline-store.js?v=20261117-2", BASE_URL).href,
   new URL("manifest.webmanifest", BASE_URL).href,
-  new URL("favicon.svg?v=20261117-4", BASE_URL).href,
+  new URL("favicon.svg?v=20261117-5", BASE_URL).href,
   new URL("app-icon.svg", BASE_URL).href,
   new URL("app-icon-maskable.svg", BASE_URL).href,
+  new URL("blue-mist-atmosphere.svg", BASE_URL).href,
 ];
 
 self.addEventListener("install", event => {
