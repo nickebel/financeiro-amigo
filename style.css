@@ -2482,18 +2482,9 @@ footer span { max-width: 60ch; text-align: left; }
   --mark-bg: var(--color-surface-hover) !important;
   --mark-color: var(--color-ink-soft) !important;
 }
-:root[data-theme="dark"] .btn.primary {
-  border-color: var(--color-action);
-  background: var(--color-action);
-  color: var(--color-action-ink);
-}
-:root[data-theme="dark"] .btn.primary:hover {
-  border-color: var(--color-button-hover);
-  background: var(--color-button-hover);
-  color: var(--color-button-hover-ink);
-}
 :root[data-theme="dark"] .summary-card.balance-card {
   border-bottom-color: var(--color-action);
+  color: var(--color-ink);
 }
 :root[data-theme="dark"] .amount-income,
 :root[data-theme="dark"] .amount-expense {
