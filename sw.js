@@ -1,5 +1,5 @@
 /* App shell PWA; o conteúdo financeiro é guardado apenas no IndexedDB deste navegador. */
-const CACHE_NAME = "ray-shell-v15";
+const CACHE_NAME = "ray-shell-v16";
 const BASE_URL = new URL("./", self.location.href);
 const SHELL_URLS = [
   BASE_URL.href,
@@ -13,7 +13,7 @@ const SHELL_URLS = [
   new URL("app-icon.svg", BASE_URL).href,
   new URL("app-icon-maskable.svg", BASE_URL).href,
   new URL("portal.html", BASE_URL).href,
-  new URL("portal.css?v=20261117-1", BASE_URL).href,
+  new URL("portal.css?v=20261117-2", BASE_URL).href,
   new URL("portal.js?v=20261117-1", BASE_URL).href,
 
 ];
