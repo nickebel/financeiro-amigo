@@ -1,54 +1,46 @@
 # Design System — Meu Financeiro
 
-**Sistema visual:** Blue Mist Atmosphere — Rich Blue em uma atmosfera oceânica.
-**Escopo:** aplicativo financeiro pessoal com prioridade para leitura, consistência e dados legíveis.
-
-## Integridade do produto
-
-O app mantém os seis destinos, os formulários, IDs, handlers, CRUD, cálculos, IndexedDB, backup manual, PWA e fluxo offline. Nenhum dado financeiro é enviado para serviço remoto.
+**Direção:** minimalismo editorial monocromático.
+**Objetivo:** destacar valores, nomes e registros por tipografia, grade e espaço negativo — não por pilhas de cartões.
 
 ## Paleta
 
-- Fundo profundo: `#071F27`
-- Petróleo principal: `#0B2932`
-- Superfície oceânica: `#153D47`
-- Superfície elevada: `#285560`
-- Azul-luz: `#ADEBFF`
-- Texto principal: `#EEF8F3`
-- Texto secundário: `#D2E6E0`
-- Texto auxiliar: `#A8C5C1`
-- Entrada positiva: `#91DCC0`
-- Despesa/erro: `#FFB9B9`
+- Fundo: `#FAFAFA`
+- Superfície: `#FFFFFF`
+- Texto principal: `#111111`
+- Texto secundário: `#444444`
+- Texto auxiliar: `#707070`
+- Divisórias: `#E5E5E5`
+- Divisórias fortes: `#CFCFCF`
+- Única cor de ação: `#003459` (reservada aos botões primários e seu foco acessível)
 
-Sem gradientes azul-roxo genéricos. O fundo atmosférico não pode competir com textos e valores.
+Não usar gradientes, tons coloridos em gráficos, cartões, entradas ou despesas, vidro, sombras pesadas ou superfícies coloridas.
 
 ## Tipografia
 
-No máximo duas famílias, sem fontes remotas:
+Duas famílias locais:
+- Display editorial: Baskerville / Iowan Old Style / Palatino / Georgia para títulos e valores em destaque.
+- Interface: Segoe UI e fallback sans-serif do sistema para corpo, navegação, tabelas e controles.
 
-- Display: Baskerville / Iowan Old Style / Palatino / Georgia para títulos e valores de destaque.
-- Interface: Segoe UI e fallback sans-serif do sistema para corpo, navegação, dados e controles.
+## Composição
 
-## Leitura e ritmo
+- Respiro entre grandes seções de 96 a 128px.
+- A hierarquia vem de tamanho, peso, alinhamento e divisórias finas.
+- Cards de resumo são superfícies transparentes: saldo em primeiro plano, entradas e despesas em segundo.
+- Grids assimétricos e alinhados com `minmax(0, ...)`; cartões e metas não se repetem em caixas idênticas.
+- Tabelas permanecem planas, com divisórias horizontais e rolagem local em telas estreitas.
+- Navegação textual, sem ícones decorativos genéricos.
+- Cantos retos, sem sombras e sem glassmorphism.
 
-- Blocos de texto corrido limitados a 62ch; blocos longos não excedem 65ch.
-- Parágrafos usam `text-wrap: pretty`; títulos h1, h2 e h3 usam `text-wrap: balance`.
-- Texto de leitura, cards e listas é alinhado à esquerda.
-- Títulos usam `clamp()` e line-height entre 1.1 e 1.2; corpo usa line-height 1.55.
-- Palavras nunca quebram no meio; navegação, botões, tags e ações mantêm seus rótulos em uma linha.
-- Valores monetários e códigos permanecem inteiros e usam tamanhos responsivos para evitar overflow.
-- Colunas seguem grids com `minmax(0, ...)`, evitando alargamento por conteúdo longo.
-- Cartões e metas usam uma distribuição assimétrica 7/5 em telas largas, empilhando no celular.
-- Painel de resumo mantém saldo como elemento dominante; entradas e despesas ficam em segundo plano.
-- Tabelas usam rolagem horizontal local em telas pequenas, sem quebrar rótulos ou números.
+## Leitura e acessibilidade
 
-## Responsividade e acessibilidade
+- Parágrafos e textos corridos limitados a 60ch.
+- Títulos usam `text-wrap: balance`; parágrafos usam `text-wrap: pretty`.
+- Line-height de títulos em 1.12 e corpo em 1.55.
+- Palavras não são divididas no meio; ações e navegação não quebram os rótulos.
+- Foco visível com a mesma cor de ação; alvos de toque de pelo menos 44px.
+- Respeitar `prefers-reduced-motion`.
 
-- Navegação desktop cede lugar ao menu móvel já existente em telas estreitas.
-- Seções e cabeçalhos empilham antes de causar compressão dos botões.
-- Controles mantêm pelo menos 44px de alvo tátil; inputs móveis permanecem em 16px.
-- Contraste, foco visível e `prefers-reduced-motion` permanecem obrigatórios.
+## Integridade e privacidade
 
-## Privacidade
-
-Sem login, API, banco remoto ou sincronização automática. Backups JSON são manuais e nunca devem ser versionados.
+O app mantém seis destinos, formulários, IDs, handlers, CRUD, cálculos, IndexedDB, backup manual, PWA e funcionamento offline. Não há login, API, banco remoto ou sincronização automática. Backups JSON nunca devem ser versionados.
