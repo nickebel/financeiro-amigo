@@ -10,11 +10,53 @@
   --color-rule-strong: #CFCFCF;
   --color-action: #003459;
   --color-action-ink: #FFFFFF;
-  --color-focus: #003459;
+  --color-focus: var(--color-action);
   --color-positive: #222222;
   --color-negative: #222222;
+
+  /* Compatibility aliases for the functional base components. */
+  --color-paper: var(--color-bg);
+  --color-paper-2: #F5F5F5;
+  --color-paper-3: #E5E5E5;
+  --color-white: #FFFFFF;
+  --color-ink-2: var(--color-ink-soft);
+  --color-field-edge: var(--color-rule-strong);
+  --color-accent: var(--color-action);
+  --color-accent-deep: var(--color-action);
+  --color-accent-wash: #F5F5F5;
+  --color-accent-ink: var(--color-action-ink);
+  --color-positive-wash: #F5F5F5;
+  --color-negative-wash: #F5F5F5;
+  --color-error: var(--color-ink);
+  --color-surface-nav: var(--color-bg);
+  --color-surface-panel: var(--color-surface);
+  --color-surface-hero: var(--color-surface);
+  --color-surface-sticky: var(--color-bg);
+  --color-surface-hover: #F4F4F4;
+  --color-surface-modal: var(--color-surface);
+  --color-surface-soft: var(--color-surface);
+  --color-surface-card: var(--color-surface);
+  --color-nav-active-border: var(--color-ink);
+  --color-nav-text: var(--color-ink-soft);
+  --color-nav-muted: var(--color-muted);
+  --color-nav-hover: #F5F5F5;
+  --color-nav-divider: var(--color-rule);
+  --color-privacy-divider: var(--color-rule);
+  --color-on-dark-label: var(--color-ink);
+  --color-on-dark-muted: var(--color-muted);
+  --color-button-hover: var(--color-action);
+  --color-button-hover-ink: var(--color-action-ink);
+  --color-overlay: rgba(0, 0, 0, .58);
+  --color-glass: var(--color-surface);
+  --color-glass-strong: #F5F5F5;
+  --color-glass-edge: var(--color-rule);
+  --color-on-glass: var(--color-ink);
+
   --font-body: "Segoe UI", Arial, ui-sans-serif, system-ui, sans-serif;
   --font-display: Baskerville, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --radius-card: 0;
+  --radius-control: 0;
+  --radius-pill: 0;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -2233,17 +2275,14 @@ textarea { min-height: 104px; resize: vertical; }
 #dashboardPage > .dashboard-grid,
 #dashboardPage > .ledger-section,
 #cardsPage > .sub-intro,
-#installmentsTable,
-#billsPage > .table-region,
-#goalsPage > .goals-grid,
 #reportsPage > .report-region {
   margin-top: var(--space-section);
 }
 #dashboardPage > .ledger-section { padding-top: 24px; }
 #cardsPage > .sub-intro { margin-top: var(--space-section); }
 #cardsPage > #installmentsTable { margin-top: 20px; }
-#billsPage > .table-region { padding-top: 8px; }
-#goalsPage > .goals-grid { padding-top: 8px; }
+#billsPage > .table-region { margin-top: 0; padding-top: 8px; }
+#goalsPage > .goals-grid { margin-top: 0; padding-top: 8px; }
 
 /* Footer stays informational and left-aligned. */
 footer {
