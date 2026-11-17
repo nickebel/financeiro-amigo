@@ -118,7 +118,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   width: 100%;
   padding: var(--space-2) var(--gutter);
   border-bottom: 1px solid var(--color-rule);
-  background: var(--color-white);
+  background: var(--color-surface-nav);
 }
 .brand {
   display: inline-flex;
@@ -177,9 +177,9 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 }
 .nav-item:hover { background: var(--color-paper-2); color: var(--color-ink); }
 .nav-item.active {
-  border-color: var(--color-rule);
-  background: var(--color-accent-wash);
-  color: var(--color-accent-deep);
+  border-color: var(--color-nav-active-border);
+  background: var(--color-surface-hover);
+  color: var(--color-ink);
 }
 .nav-item.active > span { color: var(--color-accent); }
 .sidebar-bottom { display: flex; align-items: center; margin-left: auto; }
@@ -273,11 +273,11 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   padding: var(--space-5);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 .summary-card.balance-card {
   border-color: var(--color-rule);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 .summary-top {
   display: flex;
@@ -331,7 +331,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
   padding: var(--space-5);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 .panel-heading {
   display: flex;
@@ -462,7 +462,7 @@ input, select, textarea {
   border-radius: var(--radius-control);
   outline: 2px solid transparent;
   outline-offset: -3px;
-  background: var(--color-white);
+  background: var(--color-surface-panel);
   color: var(--color-ink);
 }
 input::placeholder, textarea::placeholder { color: var(--color-muted); opacity: 1; }
@@ -491,7 +491,7 @@ textarea { min-height: 104px; resize: vertical; }
   padding: var(--space-5);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
   color: var(--color-ink);
 }
 .bank-card-head, .bank-identity, .bank-card-foot, .goal-top {
@@ -518,7 +518,7 @@ textarea { min-height: 104px; resize: vertical; }
 .bank-institution { color: var(--color-muted); font-size: 12px; overflow-wrap: break-word; }
 .bank-identity-text strong { color: var(--color-ink); font-size: 16px; overflow-wrap: break-word; }
 .bank-card .mini-btn { border-color: var(--color-rule); color: var(--color-ink-2); background: transparent; }
-.bank-card .mini-btn:hover { border-color: var(--color-accent); background: var(--color-accent-wash); color: var(--color-accent-deep); }
+.bank-card .mini-btn:hover { border-color: var(--color-accent); background: var(--color-accent); color: var(--color-accent-ink); }
 .card-number {
   margin: var(--space-6) 0 var(--space-5);
   color: var(--color-ink-2);
@@ -538,7 +538,7 @@ textarea { min-height: 104px; resize: vertical; }
   padding: var(--space-5);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 .goal-top { margin-bottom: var(--space-4); }
 .goal-icon {
@@ -595,11 +595,11 @@ textarea { min-height: 104px; resize: vertical; }
   text-decoration: none;
   white-space: nowrap;
 }
-.btn:hover { border-color: var(--color-accent); background: var(--color-accent-wash); color: var(--color-accent-deep); }
+.btn:hover { border-color: var(--color-accent); background: var(--color-surface-hover); color: var(--color-ink); }
 .btn.primary { border-color: var(--color-accent); background: var(--color-accent); color: var(--color-accent-ink); }
-.btn.primary:hover { border-color: var(--color-accent-deep); background: var(--color-accent-deep); }
+.btn.primary:hover { border-color: var(--color-button-hover); background: var(--color-button-hover); color: var(--color-button-hover-ink); }
 .btn.secondary { border-color: var(--color-rule); color: var(--color-ink-2); }
-.btn.secondary:hover { border-color: var(--color-accent); color: var(--color-accent-deep); }
+.btn.secondary:hover { border-color: var(--color-accent); color: var(--color-accent); }
 .btn.full { width: 100%; }
 .text-btn {
   min-height: 36px;
@@ -627,7 +627,7 @@ textarea { min-height: 104px; resize: vertical; }
   color: var(--color-ink);
   font-size: 20px;
 }
-.icon-btn:hover { background: var(--color-accent-wash); border-color: var(--color-accent); }
+.icon-btn:hover { background: var(--color-surface-hover); border-color: var(--color-accent); color: var(--color-ink); }
 .modal-backdrop {
   position: fixed;
   z-index: 50;
@@ -639,6 +639,7 @@ textarea { min-height: 104px; resize: vertical; }
   background: var(--color-overlay);
 }
 .modal {
+  color: var(--color-ink);
   width: min(100%, 560px);
   max-height: min(80dvh, 640px);
   overflow: auto;
@@ -646,7 +647,7 @@ textarea { min-height: 104px; resize: vertical; }
   padding: var(--space-6);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 .modal-head {
   display: flex;
@@ -657,6 +658,7 @@ textarea { min-height: 104px; resize: vertical; }
 }
 .modal-head h3 { margin-bottom: 0; }
 .toast {
+  color: var(--color-ink);
   position: fixed;
   z-index: 80;
   right: max(16px, env(safe-area-inset-right));
@@ -665,7 +667,7 @@ textarea { min-height: 104px; resize: vertical; }
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-control);
-  background: var(--color-white);
+  background: var(--color-surface-panel);
   color: var(--color-ink);
   font-size: 12px;
 }
@@ -836,21 +838,21 @@ input, textarea, select {
 table[data-actions="true"] { min-width: 680px; }
 table[data-actions="false"] { min-width: 520px; }
 table[data-actions="false"] th:first-child,
-table[data-actions="false"] td:first-child { position: sticky; z-index: 1; left: 0; min-width: 150px; background: var(--color-white); }
+table[data-actions="false"] td:first-child { position: sticky; z-index: 1; left: 0; min-width: 150px; background: var(--color-surface-panel); }
 table[data-actions="true"] th:first-child,
 table[data-actions="true"] td:first-child {
   position: sticky;
   z-index: 1;
   left: 0;
   min-width: 150px;
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 table[data-actions="true"] th:last-child,
 table[data-actions="true"] td:last-child {
   position: sticky;
   z-index: 1;
   right: 0;
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 table[data-actions="true"] thead th:first-child,
 table[data-actions="true"] thead th:last-child { z-index: 2; }
@@ -1081,7 +1083,7 @@ h3 { font-size: 19px; }
   border: 1px solid var(--color-ink-2);
   border-radius: 2px;
   background: var(--color-ink-2);
-  color: var(--color-accent-wash);
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-weight: 500;
 }
@@ -1157,8 +1159,8 @@ h3 { font-size: 19px; }
   padding: var(--space-6);
   border: 0;
   border-radius: 3px 28px 3px 3px;
-  background: var(--color-ink);
-  color: var(--color-white);
+  background: var(--color-surface-hero);
+  color: var(--color-ink);
 }
 .summary-grid:not(.report-summary) .balance-card .summary-top {
   color: var(--color-on-dark-label);
@@ -1216,7 +1218,7 @@ h3 { font-size: 19px; }
   min-height: 120px;
   border: 1px solid var(--color-rule);
   border-radius: 3px;
-  background: var(--color-white);
+  background: var(--color-surface-panel);
 }
 
 /* The dashboard has an editorial split rather than a row of identical boxes. */
@@ -1289,6 +1291,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .mini-btn { color: var(--color-ink-2); }
 .mini-btn.danger { color: var(--color-negative); }
 .bank-card, .goal-card {
+  color: var(--color-ink);
   border: 0;
   border-top: 1px solid var(--color-ink-2);
   border-bottom: 1px solid var(--color-rule);
@@ -1522,8 +1525,8 @@ body {
   inset: 0;
   width: 100%;
   pointer-events: none;
-  opacity: .2;
-  background-image: url("./blue-mist-atmosphere.svg");
+  opacity: 0;
+  background-image: none;
   background-repeat: no-repeat;
   background-size: 190% auto;
   background-position: 82% 58%;
@@ -1709,7 +1712,7 @@ footer {
   border-radius: 22px 5px 22px 5px;
   background: var(--color-surface-modal);
   color: var(--color-ink);
-  box-shadow: 0 24px 60px var(--color-shadow);
+  box-shadow: none;
 }
 .modal-head h3 { color: var(--color-ink); }
 .toast {
