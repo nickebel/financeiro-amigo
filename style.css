@@ -2638,9 +2638,9 @@ footer span { max-width: 60ch; text-align: left; }
 .portal-shortcut {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   margin-left: auto;
-  padding: 8px 0;
+  padding: var(--space-2) 0;
   color: var(--color-action);
   font-size: 12px;
   font-weight: 650;
