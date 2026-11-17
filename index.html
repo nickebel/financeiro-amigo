@@ -11,7 +11,7 @@
 <link rel="icon" href="favicon.svg?v=20261117-2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="app-icon.svg">
 
-<link rel="stylesheet" href="style.css?v=20261117-4">
+<link rel="stylesheet" href="style.css?v=20261117-5">
 
 
 </head>
@@ -22,18 +22,18 @@
   <aside class="sidebar">
     <a class="brand" href="./" aria-label="Meu Financeiro"><span class="brand-mark small">m.</span><span>meu financeiro</span></a>
     <nav id="navigation">
-      <button class="nav-item active" data-page="dashboard"><span>◫</span> Visão geral</button>
-      <button class="nav-item" data-page="transactions"><span>↕</span> Lançamentos</button>
-      <button class="nav-item" data-page="cards"><span>▤</span> Cartões e parcelas</button>
-      <button class="nav-item" data-page="bills"><span>◷</span> Contas a pagar</button>
-      <button class="nav-item" data-page="goals"><span>◎</span> Metas de economia</button>
-      <button class="nav-item" data-page="reports"><span>▥</span> Relatórios</button>
+      <button type="button" class="nav-item active" data-page="dashboard" aria-current="page"><span>◫</span> Visão geral</button>
+      <button type="button" class="nav-item" data-page="transactions"><span>↕</span> Lançamentos</button>
+      <button type="button" class="nav-item" data-page="cards"><span>▤</span> Cartões e parcelas</button>
+      <button type="button" class="nav-item" data-page="bills"><span>◷</span> Contas a pagar</button>
+      <button type="button" class="nav-item" data-page="goals"><span>◎</span> Metas de economia</button>
+      <button type="button" class="nav-item" data-page="reports"><span>▥</span> Relatórios</button>
     </nav>
     <div class="sidebar-bottom"><div class="privacy-note"><div><strong>Salvo neste aparelho</strong><small>Exporte um backup regularmente.</small></div></div></div>
   </aside>
   <main class="main">
     <header class="topbar">
-      <button id="menuBtn" class="icon-btn mobile-menu" type="button" aria-label="Abrir menu">☰</button>
+      <button id="menuBtn" class="icon-btn mobile-menu" type="button" aria-label="Abrir menu" aria-controls="navigation" aria-expanded="false">☰</button>
       <div class="topbar-heading"><h2 id="pageTitle">Visão geral</h2></div>
       <div class="top-actions">
         <span id="syncStatus" class="sync-status" role="status" aria-live="polite">Salvo neste aparelho</span>
@@ -44,38 +44,55 @@
         <p id="installHelp" class="install-help hidden">No celular, abra o menu do navegador e escolha “Instalar app” ou “Adicionar à tela inicial”.</p>
       </div>
     </header>
-    <div class="content">
+    <div id="content" class="content" aria-busy="false">
       <section id="dashboardPage" class="page">
-        <div class="welcome-row"><div><h3>Resumo do mês</h3><p class="muted">Acompanhe o que entrou e saiu.</p></div><button class="btn primary" id="quickAddBtn">＋ Novo lançamento</button></div>
-        <div class="filter-row"><label for="monthFilter">Período</label><input id="monthFilter" type="month"></div>
-        <div class="summary-grid">
-          <article class="summary-card balance-card"><div class="summary-top"><span>Saldo do período</span><span class="round-icon">↗</span></div><strong id="balanceValue">R$ 0,00</strong><small id="balanceHint">Entradas menos despesas</small></article>
-          <article class="summary-card"><div class="summary-top"><span>Entradas</span><span class="round-icon green">＋</span></div><strong id="incomeValue">R$ 0,00</strong><small class="muted">Dinheiro recebido</small></article>
-          <article class="summary-card"><div class="summary-top"><span>Despesas</span><span class="round-icon peach">−</span></div><strong id="expenseValue">R$ 0,00</strong><small class="muted">Dinheiro gasto</small></article>
-          
+        <div class="welcome-row">
+          <div><h3>Resumo do mês</h3><p class="muted">Acompanhe o que entrou e saiu.</p></div>
+          <button type="button" class="btn primary" id="quickAddBtn">＋ Novo lançamento</button>
+        </div>
+        <div class="filter-row"><label for="monthFilter">Período</label><input id="monthFilter" type="month" aria-label="Selecionar período"></div>
+        <div class="summary-grid" aria-label="Resumo financeiro do período">
+          <article class="summary-card balance-card"><div class="summary-top"><span>Saldo do período</span></div><strong id="balanceValue">R$ 0,00</strong><small id="balanceHint">Entradas menos despesas</small></article>
+          <article class="summary-card"><div class="summary-top"><span>Entradas</span></div><strong id="incomeValue">R$ 0,00</strong><small class="muted">Dinheiro recebido</small></article>
+          <article class="summary-card"><div class="summary-top"><span>Despesas</span></div><strong id="expenseValue">R$ 0,00</strong><small class="muted">Dinheiro gasto</small></article>
         </div>
         <div class="dashboard-grid">
-          <article class="panel"><div class="panel-heading"><div><h3>Despesas por categoria</h3><p class="muted">Como seu dinheiro foi usado</p></div><span class="panel-symbol">◌</span></div><div id="categoryChart" class="category-chart"><div class="empty-state">Seus gastos aparecerão aqui quando você registrar lançamentos.</div></div></article>
-          <article class="panel"><div class="panel-heading"><div><h3>Próximos vencimentos</h3><p class="muted">Contas que merecem atenção</p></div><button class="text-btn" data-goto="bills">Ver todas</button></div><div id="upcomingBills" class="compact-list"><div class="empty-state">Nenhuma conta cadastrada.</div></div></article>
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Despesas por categoria</h3><p class="muted">Como seu dinheiro foi usado</p></div></div>
+            <div id="categoryChart" class="category-chart" aria-live="polite"><div class="empty-state">Seus gastos aparecerão aqui quando você registrar lançamentos.</div></div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Próximos vencimentos</h3><p class="muted">Contas que merecem atenção</p></div><button type="button" class="text-btn" data-goto="bills">Ver todas</button></div>
+            <div id="upcomingBills" class="compact-list" aria-live="polite"><div class="empty-state">Nenhuma conta cadastrada.</div></div>
+          </article>
         </div>
-        <article class="panel"><div class="panel-heading"><div><h3>Últimos lançamentos</h3><p class="muted">Movimentações recentes</p></div><button class="text-btn" data-goto="transactions">Ver todos</button></div><div id="recentTransactions"></div></article>
-      </section>
-      <section id="transactionsPage" class="page hidden"><div class="section-intro"><div><h3>Seus lançamentos</h3><p class="muted">Registre e acompanhe cada entrada ou despesa.</p></div><button class="btn primary" id="addTransactionBtn">＋ Adicionar</button></div><div class="panel"><div class="toolbar"><input id="transactionSearch" placeholder="Buscar lançamento..." aria-label="Buscar lançamento"><select id="typeFilter" aria-label="Filtrar tipo"><option value="">Todos os tipos</option><option value="income">Entradas</option><option value="expense">Despesas</option></select></div><div id="transactionsTable"></div></div></section>
-      <section id="cardsPage" class="page hidden"><div class="section-intro"><div><h3>Cartões e parcelas</h3><p class="muted">Organize seus cartões e compras parceladas.</p></div><button class="btn primary" id="addCardBtn">＋ Novo cartão</button></div><div id="cardsList" class="cards-grid"></div><div class="section-intro sub-intro"><div><h3>Compras parceladas</h3><p class="muted">O valor mensal é calculado automaticamente.</p></div><button class="btn secondary" id="addInstallmentBtn">＋ Nova compra</button></div><div class="panel" id="installmentsTable"></div></section>
-      <section id="billsPage" class="page hidden"><div class="section-intro"><div><h3>Contas a pagar</h3><p class="muted">Acompanhe datas e marque o que já foi pago.</p></div><button class="btn primary" id="addBillBtn">＋ Nova conta</button></div><div class="panel"><div id="billsTable"></div></div></section>
-      <section id="goalsPage" class="page hidden"><div class="section-intro"><div><h3>Metas de economia</h3><p class="muted">Cada pequena contribuição aproxima você do objetivo.</p></div><button class="btn primary" id="addGoalBtn">＋ Nova meta</button></div><div id="goalsList" class="goals-grid"></div></section>
-      <section id="reportsPage" class="page hidden"><div class="section-intro"><div><h3>Relatórios</h3><p class="muted">Entenda seus hábitos financeiros sem complicação.</p></div></div><div class="summary-grid report-summary"><article class="summary-card"><span class="muted">Taxa de economia</span><strong id="savingRate">Sem dados</strong><small class="muted">Saldo ÷ entradas</small></article><article class="summary-card"><span class="muted">Maior categoria</span><strong id="topCategory">Sem dados</strong><small class="muted">No período selecionado</small></article></div><div class="panel"><div class="panel-heading"><div><h3>Resumo por categoria</h3><p class="muted">Despesas no período selecionado</p></div></div><div id="reportCategories"></div></div></section>
+        <section class="ledger-section" aria-labelledby="recentHeading">
+          <div class="panel-heading"><div><h3 id="recentHeading">Últimos lançamentos</h3><p class="muted">Movimentações recentes</p></div><button type="button" class="text-btn" data-goto="transactions">Ver todos</button></div>
+          <div id="recentTransactions" aria-live="polite"></div>
+        </section>
+      </section><section id="transactionsPage" class="page hidden">
+        <div class="section-intro"><div><h3>Seus lançamentos</h3><p class="muted">Registre e acompanhe cada entrada ou despesa.</p></div><button type="button" class="btn primary" id="addTransactionBtn">＋ Adicionar</button></div>
+        <div class="table-panel">
+          <div class="toolbar"><input id="transactionSearch" type="search" placeholder="Buscar lançamento..." aria-label="Buscar lançamento"><select id="typeFilter" aria-label="Filtrar tipo"><option value="">Todos os tipos</option><option value="income">Entradas</option><option value="expense">Despesas</option></select></div>
+          <div id="transactionsTable" class="table-region"></div>
+        </div>
+      </section><section id="cardsPage" class="page hidden"><div class="section-intro"><div><h3>Cartões e parcelas</h3><p class="muted">Organize seus cartões e compras parceladas.</p></div><button type="button" class="btn primary" id="addCardBtn">＋ Novo cartão</button></div><div id="cardsList" class="cards-grid"></div><div class="section-intro sub-intro"><div><h3>Compras parceladas</h3><p class="muted">O valor mensal é calculado automaticamente.</p></div><button type="button" class="btn secondary" id="addInstallmentBtn">＋ Nova compra</button></div><div id="installmentsTable" class="table-region"></div></section>
+      <section id="billsPage" class="page hidden">
+        <div class="section-intro"><div><h3>Contas a pagar</h3><p class="muted">Acompanhe datas e marque o que já foi pago.</p></div><button type="button" class="btn primary" id="addBillBtn">＋ Nova conta</button></div>
+        <div id="billsTable" class="table-region"></div>
+      </section><section id="goalsPage" class="page hidden"><div class="section-intro"><div><h3>Metas de economia</h3><p class="muted">Cada pequena contribuição aproxima você do objetivo.</p></div><button type="button" class="btn primary" id="addGoalBtn">＋ Nova meta</button></div><div id="goalsList" class="goals-grid"></div></section>
+      <section id="reportsPage" class="page hidden"><div class="section-intro"><div><h3>Relatórios</h3><p class="muted">Entenda seus hábitos financeiros sem complicação.</p></div></div><div class="summary-grid report-summary"><article class="summary-card"><span class="muted">Taxa de economia</span><strong id="savingRate">Sem dados</strong><small class="muted">Saldo ÷ entradas</small></article><article class="summary-card"><span class="muted">Maior categoria</span><strong id="topCategory">Sem dados</strong><small class="muted">No período selecionado</small></article></div><section class="report-region" aria-labelledby="reportCategoriesHeading"><div class="panel-heading"><div><h3 id="reportCategoriesHeading">Resumo por categoria</h3><p class="muted">Despesas no período selecionado</p></div></div><div id="reportCategories"></div></section></section>
     </div>
     <footer>Os dados ficam neste navegador. Exporte um backup para trocar de aparelho. <span>Valores em reais (BRL).</span></footer>
   </main>
 </div>
-<div id="modalBackdrop" class="modal-backdrop hidden"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><h3 id="modalTitle">Novo lançamento</h3></div><button id="closeModalBtn" class="icon-btn" aria-label="Fechar">×</button></div><form id="editorForm"><div id="modalFields" class="form-grid"></div><div class="form-actions"><button type="button" id="cancelModalBtn" class="btn secondary">Cancelar</button><button class="btn primary" type="submit">Salvar</button></div><p id="formMessage" class="message" role="status"></p></form></section></div>
-<div id="toast" class="toast" role="status"></div>
+<dialog id="modalBackdrop" class="modal-backdrop" aria-labelledby="modalTitle"><section class="modal"><div class="modal-head"><div><h3 id="modalTitle">Novo lançamento</h3></div><button type="button" id="closeModalBtn" class="icon-btn" aria-label="Fechar">×</button></div><form id="editorForm"><div id="modalFields" class="form-grid"></div><div class="form-actions"><button type="button" id="cancelModalBtn" class="btn secondary">Cancelar</button><button class="btn primary" type="submit">Salvar</button></div><p id="formMessage" class="message" role="status"></p></form></section></dialog>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"><span id="toastMessage"></span><button type="button" id="toastCloseBtn" class="toast-close" aria-label="Fechar aviso">×</button></div>
 
 
 
 
 <script src="offline-store.js?v=20261117-2"></script>
-<script src="app.js?v=20261117-3"></script>
+<script src="app.js?v=20261117-5"></script>
 <script src="pwa.js?v=20261117-2"></script>
 </body></html>
