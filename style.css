@@ -1895,9 +1895,9 @@ a, button { text-align: left; }
 }
 .panel-heading p { font-size: 13px; }
 .section-intro { align-items: flex-end; }
-.welcome-row, .section-intro { gap: clamp(16px, 2vw, 28px); }
+.welcome-row, .section-intro { gap: var(--space-4); }
 .summary-grid:not(.report-summary) {
-  column-gap: clamp(20px, 2.4vw, 32px);
+  column-gap: var(--space-5);
 }
 .dashboard-grid {
   grid-template-columns: minmax(0, 1.28fr) minmax(280px, .72fr);
